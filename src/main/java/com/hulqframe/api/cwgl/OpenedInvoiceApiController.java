@@ -41,21 +41,21 @@ public class OpenedInvoiceApiController{
         OpenedInvoice openedInvoice=openedInvoiceService.findById(id);
         return ApiResult.toSuccess(openedInvoice);
     }
-    @RequestMapping("save")
-    @ApiOperation(value = "保存开票记录对象",notes = "保存开票记录对象",httpMethod = "POST")
-    public  ApiResult  save(OpenedInvoice openedInvoice){
-        if(openedInvoice.getId()==null){
-            openedInvoiceService.save(openedInvoice);
-        }else{
-            openedInvoiceService.update(openedInvoice);
-        }
-        return ApiResult.toSuccess(null);
-    }
-    @RequestMapping("delete")
-    @ApiOperation(value = "删除开票记录",notes = "删除开票记录",httpMethod = "POST")
-    public  ApiResult  delete(Integer id){
-        openedInvoiceService.delete(id);
-        return ApiResult.toSuccess(null);
-    }
+//    @RequestMapping("save")
+//    @ApiOperation(value = "保存开票记录对象",notes = "保存开票记录对象",httpMethod = "POST")
+//    public  ApiResult  save(OpenedInvoice openedInvoice){
+//        if(openedInvoice.getId()==null){
+//            openedInvoiceService.save(openedInvoice);
+//        }else{
+//            openedInvoiceService.update(openedInvoice);
+//        }
+//        return ApiResult.toSuccess(null);
+//    }
+//    @RequestMapping("delete")
+//    @ApiOperation(value = "删除开票记录",notes = "删除开票记录",httpMethod = "POST")
+//    public  ApiResult  delete(Integer id){
+//        openedInvoiceService.delete(id);
+//        return ApiResult.toSuccess(null);
+//    }
 
 }
