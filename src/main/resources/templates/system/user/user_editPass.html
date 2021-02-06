@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script src="${ctx}ace/assets/js/jquery-2.1.4.min.js"></script>
+    <style>
+        .layui-input{
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+        <form  class="layui-form"  id="editForm" onsubmit="return false;" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="oldPass">原始密码:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="oldPass" type="password" id="oldPass" placeholder="请输入原始密码"  required  lay-verify="required" lay-reqtext="请输入原始密码" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="newPass">新密码:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="newPass" type="password" id="newPass" placeholder="请输入新密码"  required lay-verify="required" lay-reqtext="请输入新密码" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="confirmPass">确认密码:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="confirmPass" type="password" id="confirmPass" placeholder="请输入确认密码" required  lay-verify="required|confirmPass" lay-reqtext="请输入确认密码" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    layui.config({
+        base: '${ctx}layui/layui_exts/xm-select/'
+    }).extend({
+        xmSelect: 'xm-select'
+    }).use(['xmSelect','form'], function(){
+        var form = layui.form;
+        // 校验两次密码是否一致
+        form.verify({
+            confirmPass: function (value) {
+                if ($('#newPass').val() !== value)
+                    return '确认密码不一致！';
+            }
+        });
+        form.render();
+            form.on('submit(formSubmit)', function(data) {
+            $.ajax({
+                url:'/system/user/updatePass',
+                method:'post',
+                traditional: true,//这里设置为true
+                data:data.field,
+                dataType:'JSON',
+                success:function(res){
+                    if(res.success){
+                        layer.msg('操作成功');
+                        top.closeDialog(false);
+                    }else{
+                        layer.msg(res.message==null?'操作失败':res.message);
+                    }
+
+                },
+                error:function (data) {
+                    layer.msg('操作失败');
+                }
+            }) ;
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

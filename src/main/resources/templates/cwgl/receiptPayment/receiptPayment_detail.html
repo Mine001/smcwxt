@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="layui-table detail-table">
+    <tr>
+        <th class="layui-bg-gray " style="width: 15%;">主键:</th>
+        <td class="layui-col-md4">
+            ${data.id!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">创建日期:</th>
+        <td class="layui-col-md4">
+            ${data.createTime!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">金额:</th>
+        <td class="layui-col-md4">
+            ${data.money!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">签收单ID:</th>
+        <td class="layui-col-md4">
+            ${data.receiptId!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">付款ID:</th>
+        <td class="layui-col-md4">
+            ${data.paymentId!}
+        </td>
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

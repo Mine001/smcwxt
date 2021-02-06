@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="layui-table detail-table">
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">标题:</th>
+        <td class="layui-col-md4">
+            ${data.title!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">地址:</th>
+        <td class="layui-col-md4">
+            ${data.address!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">标题111:</th>
+        <td class="layui-col-md4">
+            ${data.titleAddress!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">生日:</th>
+        <td class="layui-col-md4">
+            ${strutil.formatDate(data.birthday,'yyyy-MM-dd')}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">内容:</th>
+        <td class="layui-col-md4">
+            ${data.content!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">标题图:</th>
+        <td class="layui-col-md4">
+            ${data.titleImg!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">附件:</th>
+        <td class="layui-col-md4">
+            ${data.testFile!}
+        </td>
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

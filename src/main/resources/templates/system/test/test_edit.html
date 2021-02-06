@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <style>
+        .layui-input{
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/system/test/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden"
+               name="id" value="${data.id!}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="title">标题:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="title" type="text" id="title" placeholder="请输入标题"
+                       value="${data.title!你好}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="address"><font style='color:red;'>*</font>地址:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="address" type="text" id="address" placeholder="请输入地址"
+                       value="${data.address!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="titleAddress"><font style='color:red;'>*</font>标题111:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="titleAddress" type="text" id="titleAddress" placeholder="请输入标题111"
+                       value="${data.titleAddress!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="birthday"><font style='color:red;'>*</font>生日:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input" name="birthday" type="text" id="birthday" placeholder="请输入生日"
+                       required lay-verify="required"
+                       value="${data.birthday!,dateFormat='yyyy-MM-dd'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="content"><font style='color:red;'>*</font>内容:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为文本编辑器-->
+                <textarea class="layui-textarea"
+                          required lay-verify="required"
+                          name="content"   id="content">${data.content!}</textarea>
+                <script>
+                    CKEDITOR.replace( 'content');
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="titleImg"><font style='color:red;'>*</font>标题图:</label>
+
+            <div class="layui-input-block">
+                <!--附件上传-->
+                <div  class="wu-example">
+                    <!--用来存放文件信息-->
+                    <input type="hidden"
+                           required lay-verify="required"
+                           name="titleImg" id="titleImg" value="${data.titleImg!}"/>
+                    <div class="uploader-list">
+                        <img id="titleImg_prew"  style="max-width: 120px;max-height: 120px;" src="${data.titleImg!}"></img>
+                    </div>
+                    <div class="btns">
+                        <div id="titleImg_picker">选择图片</div>
+                    </div>
+                </div>
+                <script>
+                    var uploader = WebUploader.create({
+                        // swf文件路径
+                        swf: '/webuploader/Uploader.swf',
+                        // 文件接收服务端。
+                        server: '/upload',
+                        // 选择文件的按钮。可选。
+                        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                        pick: '#titleImg_picker',
+                        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                        resize: false,
+                        // 选完文件后，是否自动上传。
+                        auto: true,
+                        multiple:false,
+                        // 只允许选择图片文件。
+                        accept: {
+                            title: '请选择标题图',
+                            extensions: 'gif,jpg,jpeg,bmp,png',
+                            mimeTypes: 'image/*'
+                        }
+                    });
+                    uploader.on( 'uploadSuccess', function( file ,response) {
+                        if(response.success){
+                            var data=response.data;
+                            $("#titleImg_prew").attr("src",data.fileUrl);
+                            $("#titleImg").val(data.fileUrl);
+                        }else{
+                            alert( data.message?data.message:"上传失败");
+                        }
+                    });
+
+                    uploader.on( 'uploadError', function( file ) {
+                        $( '#'+file.id ).find('p.state').text('上传出错');
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="testFile"><font style='color:red;'>*</font>附件:</label>
+
+            <div class="layui-input-block">
+                <!--附件上传-->
+                <div   class="wu-example">
+                    <!--用来存放文件信息-->
+                    <input type="hidden"
+                           required lay-verify="required"
+                           name="testFile" id="testFile" value="${data.testFile!}"/>
+                    <div id="testFile_list" class="uploader-list">
+                    </div>
+                    <div class="btns">
+                        <div id="testFile_picker">选择文件</div>
+                    </div>
+                </div>
+                <script>
+                    var uploader = WebUploader.create({
+                        // swf文件路径
+                        swf: '/webuploader/Uploader.swf',
+                        // 文件接收服务端。
+                        server: '/upload',
+                        // 选择文件的按钮。可选。
+                        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                        pick: '#testFile_picker',
+                        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                        resize: false,
+                        // 选完文件后，是否自动上传。
+                        auto: true,
+                        multiple:false
+                    });
+                    uploader.on( 'uploadSuccess', function( file ,response) {
+                        if(response.success){
+                            var data=response.data;
+                            var div=$("<div>")
+                            var h4=$('<h4 class="info">');
+                            var a=$('<a>');
+                            a.attr("href",data.fileUrl);
+                            a.text(data.fileName);
+                            h4.append(a);
+                            div.append(h4)
+                            $("#testFile_list").append(div);
+                            $("#testFile").val(data.fileUrl);
+                        }else{
+                            alert( data.message?data.message:"上传失败");
+                        }
+                    });
+
+                    uploader.on( 'uploadError', function( file ) {
+                        $( '#'+file.id ).find('p.state').text('上传出错');
+                    });
+                </script>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    alert( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    alert( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

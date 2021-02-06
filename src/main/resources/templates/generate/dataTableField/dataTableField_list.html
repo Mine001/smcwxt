@@ -1,0 +1,69 @@
+<table lay-filter="parse-table-demo">
+    <thead>
+    <tr role="row">
+        <th  lay-data="{field:'index', width:80}">
+            序号
+        </th>
+        <th  lay-data="{field:'name'}">
+            别名
+        </th>
+        <th  lay-data="{field:'fieldName'}" >
+           字段名
+        </th>
+        <th  lay-data="{field:'fieldType'}" >
+            字段类别
+        </th>
+        <th  lay-data="{field:'fieldClassText'}">
+            字段类型
+        </th>
+        <th  lay-data="{field:'notNull'}" >
+            是否为空
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+        @for(item in page.list){
+            <tr role="row">
+                <td class="center">
+                    <input type="hidden" value="${item.id}"/>
+                    ${itemLP.index}
+                </td>
+                <td>
+                   ${item.name}
+                </td>
+                <td>${item.fieldName}</td>
+                <td>${item.fieldType}</td>
+                <td>${item.fieldClassText}</td>
+                <td>${item.notNull}</td>
+            </tr>
+        @}
+    </tbody>
+</table>
+
+
+<div class="pagination" id="Pagination" >
+
+</div>
+<script>
+    layui.use(['laypage','table'], function(){
+        var table = layui.table;
+        var laypage = layui.laypage;
+
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'Pagination' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count: ${page.total}  //数据总数，从服务端得到
+            ,curr: ${page.pageNum}
+            ,jump: function(obj, first){
+                //obj包含了当前分页的所有参数，比如：
+                //首次不执行
+                if(!first){
+                    getContent(obj.curr);
+                }
+            }
+        });
+        table.init('parse-table-demo', { //转化静态表格
+        });
+    });
+</script>

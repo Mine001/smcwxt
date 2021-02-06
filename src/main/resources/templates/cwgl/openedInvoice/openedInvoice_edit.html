@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/cwgl/openedInvoice/save" id="editForm" onsubmit="return false;" method="post">
+        <input class="layui-input"
+               name="id" type="text" id="id" placeholder="请输入主键"
+               value="${data.id!}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="projectId">项目ID:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="projectId" type="text" id="projectId" placeholder="请输入项目ID"
+                       value="${data.projectId!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="money">金额:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="money" type="text" id="money" placeholder="请输入金额"
+                       value="${data.money!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="remark">备注:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   class="layui-textarea"
+                            name="remark"  id="remark" rows="5" cols="30">${data.remark!}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="taxpayer">纳税人名称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="taxpayer" type="text" id="taxpayer" placeholder="请输入纳税人名称"
+                       value="${data.taxpayer!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="taxNo">纳税人识别号:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="taxNo" type="text" id="taxNo" placeholder="请输入纳税人识别号"
+                       value="${data.taxNo!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="address">地址:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="address" type="text" id="address" placeholder="请输入地址"
+                       value="${data.address!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="openBank">开户行:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="openBank" type="text" id="openBank" placeholder="请输入开户行"
+                       value="${data.openBank!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="serverName">服务名称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="serverName" type="text" id="serverName" placeholder="请输入服务名称"
+                       value="${data.serverName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="specs">规格型号:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="specs" type="text" id="specs" placeholder="请输入规格型号"
+                       value="${data.specs!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="unit">单位:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="unit" type="text" id="unit" placeholder="请输入单位"
+                       value="${data.unit!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="count">数量:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="count" type="text" id="count" placeholder="请输入数量"
+                       value="${data.count!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="invoiceCode">发票代码:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="invoiceCode" type="text" id="invoiceCode" placeholder="请输入发票代码"
+                       value="${data.invoiceCode!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="invoiceNo">发票号码:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="invoiceNo" type="text" id="invoiceNo" placeholder="请输入发票号码"
+                       value="${data.invoiceNo!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="openTime">开票日期:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input date-picker" name="openTime" type="text" id="openTime" placeholder="请输入开票日期"
+                       value="${data.openTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="staus">状态:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="staus" type="text" id="staus" placeholder="请输入状态 0：未收款 1：已收款"
+                       value="${data.staus!0}" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

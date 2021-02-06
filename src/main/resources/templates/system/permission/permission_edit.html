@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/ace/assets/css/bootstrap.min.css" />
+    <script src="/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/static/ace/assets/js/jquery.validate.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="form-horizontal" action="/system/permission/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden" name="id" value="${data.id!}"/>
+        <input type="hidden" name="parentId" value="${data.parentId!1}"/>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="name">菜单名称</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="name" type="text" id="name" placeholder="请输入菜单名称"
+                       value="${data.name!}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="type">菜单类型</label>
+            <div class="col-xs-10">
+                <select class="form-control" name="type" id="type" onchange="selectType(this)">
+                    <option value="">请选择</option>
+                    @for(type in types){
+                     <option value="${type.value}">${type.text}</option>
+                    @}
+                </select>
+            </div>
+        </div>
+        <div class="form-group" id="div_url">
+            <label class="col-xs-2 control-label" for="url">菜单连接</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="url" type="text" id="url" placeholder="请输入菜单连接"
+                       value="${data.url!}" />
+            </div>
+        </div>
+        <div class="form-group" style="display: none;" id="div_action">
+            <label class="col-xs-2 control-label" for="action">操作方法名</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="action" type="text" id="action" placeholder="请输入操作方法名"
+                       value="${data.action!}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="seq">排序</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="seq" type="text" id="seq" placeholder="请输入排序"
+                       value="${data.seq!0}" />
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success" type="button" onclick="save()" >保存</button>
+            <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function selectType(obj) {
+        changeType($(obj).val());
+
+    }
+    function changeType(type) {
+        if(type==0){
+            $("#div_url").hide();
+            $("#div_action").hide();
+            if($("#url").val()=="")
+                $("#url").val("#");
+            if($("#action").val()=="")
+                $("#action").val("#");
+
+        }
+        if(type==1){
+            $("#div_url").show();
+            $("#div_action").hide();
+            if($("#action").val()=="")
+                $("#action").val("#");
+        }
+        if(type==2){
+            $("#div_url").show();
+            $("#div_action").show();
+        }
+    }
+    function save(){
+        $('#editForm').submit();
+    }
+    $(document).ready(function(){
+        changeType(${data.type!});
+        $("#type").val(${data.type!});
+        $('#editForm').validate({
+            errorElement : 'span',
+            errorClass : 'help-block',
+            focusInvalid : false,
+            rules : {
+                name : {
+                    required : true,
+                    maxlength: 20
+                },
+                type : {
+                    required : true
+                },
+                url : {
+                    required : true,
+                    maxlength: 200
+                },
+                action : {
+                    required : true,
+                    maxlength: 20
+                },
+                seq : {
+                    digits : true
+                }
+            },
+            messages : {
+                name : {
+                    required : "请输入菜单名称",
+                    maxlength: "菜单名称的长度不能大于20"
+                },
+                type : {
+                    required : "请选择菜单类型"
+                },
+                url : {
+                    required : "请输入菜单路径",
+                    maxlength: "菜单路径的长度不能大于200"
+                },
+                action : {
+                    required : "请输入操作方法名称",
+                    maxlength: "操作方法名称的长度不能大于20"
+                },
+                seq : {
+                    digits : "排序必须是数字类型"
+                }
+            },
+            highlight : function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success : function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement : function(error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler : function(form) {
+                $(form).ajaxSubmit(function(data){
+                    if(data.success){
+                        alert( data.message?data.message:"操作成功");
+                        top.closeDialog(true);
+                    }else{
+                        alert( data.message?data.message:"操作失败");
+                    }
+                });
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>

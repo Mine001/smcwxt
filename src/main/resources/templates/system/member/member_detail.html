@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/ace/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/basic.css">
+</head>
+<body>
+<div>
+    <div class="col-xs-12  table-bordered">
+        <div class="panel-heading col-xs-2 text-right bg-info">
+            <h5>账号:</h5>
+        </div>
+        <div class="panel-body col-xs-10">
+            ${data.account!}
+
+        </div>
+    </div>
+    <div class="col-xs-12  table-bordered">
+        <div class="panel-heading col-xs-2 text-right bg-info">
+            <h5>邮箱:</h5>
+        </div>
+        <div class="panel-body col-xs-10">
+            ${data.email!}
+
+        </div>
+    </div>
+    <div class="col-xs-12  table-bordered">
+        <div class="panel-heading col-xs-2 text-right bg-info">
+            <h5>生日:</h5>
+        </div>
+        <div class="panel-body col-xs-10">
+            ${strutil.formatDate(data.birthday,'yyyy-MM-dd')}
+
+        </div>
+    </div>
+    <div class="col-xs-12  table-bordered">
+        <div class="panel-heading col-xs-2 text-right bg-info">
+            <h5>用户昵称:</h5>
+        </div>
+        <div class="panel-body col-xs-10">
+            ${data.userName!}
+
+        </div>
+    </div>
+    <div class="col-sm-12 text-center">
+
+        <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+    </div>
+
+
+</div>
+
+</body>
+</html>

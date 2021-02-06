@@ -1,0 +1,16 @@
+<div class="col-xs-12">
+    <div id="treeview6" class=""></div>
+</div>
+<script>
+    $('#treeview6').treeview({
+        color: "#428bca",
+        expandIcon: "glyphicon glyphicon-plus",
+        collapseIcon: "glyphicon glyphicon-minus",
+        nodeIcon: "glyphicon glyphicon-tasks",
+        showTags: false,
+        data: ${datas},
+        onNodeSelected:function(event, data) {
+            selectId=data.id;
+        }
+    });
+</script>

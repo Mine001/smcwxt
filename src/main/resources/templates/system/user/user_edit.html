@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script src="${ctx}ace/assets/js/jquery-2.1.4.min.js"></script>
+    <style>
+        .layui-input{
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+        <form  class="layui-form" action="/system/user/saveNew" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden" name="id" value="${data.id!}"/>
+        <input type="hidden" name="roleIds" id="roleIds" value="${roleIds!}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号:</label>
+            <div class="layui-form-label" style="text-align: left;">
+                ${data.account!}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="userName">用户名:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="userName" type="text" id="userName" placeholder="请输入用户名"
+                       value="${data.userName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="roleSelect">角色:</label>
+            <div class="layui-input-block"  id="roleSelect" style="width: 80%">
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="mobile">手机号码:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="mobile" type="text" id="mobile" placeholder="请输入手机号码"
+                       value="${data.mobile!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="sex">性别:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="sex" type="text" id="sex" placeholder="请输入性别"
+                       value="${data.sex!}" />
+            </div>
+        </div>
+        <input type="hidden" name="isDelete" value="${data.isDelete!false}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="remark">备注:</label>
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   name="remark"   id="remark" class="layui-textarea">${data.remark!}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="email">邮箱:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="email" type="text" id="email" placeholder="请输入邮箱"
+                       value="${data.email!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="orgId">部门ID:</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="orgId" type="text" id="orgId" placeholder="请输入部门ID"
+                       value="${data.orgId!}" />
+            </div>
+        </div>
+            <div style="text-align: center;">
+                <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+                <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+            </div>
+    </form>
+
+</div>
+<script>
+    layui.config({
+        base: '${ctx}layui/layui_exts/xm-select/'
+    }).extend({
+        xmSelect: 'xm-select'
+    }).use(['xmSelect','form'], function(){
+        var form = layui.form;
+        var xmSelect = layui.xmSelect;
+        var roleDatas=[];
+        @for(role in roles){
+            roleDatas.push({name:"${role.roleName}",value:"${role.id}"});
+        @}
+        //渲染多选
+        var roles = xmSelect.render({
+            el: '#roleSelect',
+            data:roleDatas
+        });
+        roles.setValue(${roleIds});
+
+        form.on('submit(formSubmit)', function(data) {
+            data.field.roleIds=roles.getValue("value");
+            $.ajax({
+                url:'/system/user/saveNew',
+                method:'post',
+                traditional: true,//这里设置为true
+                data:data.field,
+                dataType:'JSON',
+                success:function(res){
+                    if(res.success){
+                        layer.msg('操作成功');
+                        top.closeDialog(true);
+                    }else{
+                        layer.msg(res.message==null?'操作失败':res.message);
+                    }
+
+                },
+                error:function (data) {
+                    layer.msg('操作失败');
+                }
+            }) ;
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

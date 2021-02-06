@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>收款记录</title>
+    <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/tableStyle.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script>
+        layui.use(['treeSelect','table','form'], function(){
+            var table = layui.table;
+            var form = layui.form;
+            var treeSelect= layui.treeSelect;
+            form.render(); //更新全部
+            treeSelect.render({
+                // 选择器
+                elem: '#receiveTypeName',
+                // 数据
+                data: '/system/dataDict/listForTreeSelect?pId=62',
+                // 异步加载方式：get/post，默认get
+                type: 'get',
+                // 占位符
+                placeholder: '请选择收款类型',
+                // 是否开启搜索功能：true/false，默认false
+                search: true,
+                // 点击回调
+                click: function(d){
+                    $("#SEARCH_AND_recevieType_EQ").val(d.current.id);
+                },
+                style: {
+                    folder: {
+                        enable: true
+                    },
+                    line: {
+                        enable: true
+                    }
+                },
+                // 加载完成后的回调函数
+                success: function (d) {
+//
+                }
+            });
+            //第一个实例
+            var tableIns=table.render({
+                    elem: '#receivePageContent'
+                    ,url: '/cwgl/receive/list' //数据接口
+                    ,where:$("#receivePageForm").serializeJson()
+                    ,request:{
+                        pageName: 'pageNum', //页码的参数名称，默认：page
+                        limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                    }
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {title: '序号', width:80, templet: function (d) {
+                            return d.LAY_TABLE_INDEX+1
+                        }}
+                            ,{field: 'receiveTime', title: '收款时间'}
+                            ,{field: 'projectName', title: '项目名称'}
+                            ,{field: 'receiveMoney', title: '收款金额'}
+                            ,{field: 'receiveTypeName', title: '收款类型'}
+                            ,{field: 'receiveContent', title: '收款内容'}
+                            ,{field: 'status', title: '状态',templet: function (d) {
+                                if(d.status==1){
+                                    return "已审核";
+                                }else{
+                                    return "待审核";
+                                }
+                             }}
+                            ,{field: 'invoiceId', title: '发票ID'}
+                    ]]
+        });
+        //监听行单击事件
+        table.on('row(receivePageTable)', function(obj){
+            $(".selected").removeClass("selected");
+            $(obj.tr).addClass("selected");
+            selectId=obj.data.id;
+        });
+        init=function(){
+            getContent(1);
+        };
+        getContent=function(pageNum){
+            selectId=undefined;
+            tableIns.reload({
+                where:$("#receivePageForm").serializeJson()
+        });
+        };
+        rest=function(){
+            $("#SEARCH_AND_status_EQ").val("");
+            $("#SEARCH_AND_receiveTime_GTE").val("");
+            $("#SEARCH_AND_receiveTime_LTE").val("");
+            $("#SEARCH_AND_receiveType_EQ").val("");
+            $("#SEARCH_AND_projectId_EQ").val("");
+            $("#projectName").val("");
+            $("#payTypeName").val("");
+            $(".layui-input").val("");
+            treeSelect.refresh('receiveTypeName');
+            form.render(); //更新全部
+            getContent(1);
+        };
+        add=function(title,url,width,height){
+            top.openDialog(title,url,width,height)
+        };
+
+
+        edit=function(title,url,width,height){
+            if(!selectId){
+                layer.msg("请选择需要修改的记录");
+                return;
+            }
+            top.openDialog(title,url+"?id="+selectId,width,height)
+        };
+        detail=function(title,url,width,height){
+            if(!selectId){
+                layer.msg("请选择需要查看的记录");
+                return;
+            }
+            top.openDialog(title,url+"/"+selectId,width,height)
+        };
+        del=function(title,url,width,height) {
+            if(!selectId){
+                layer.msg("请选择需要删除的记录");
+                return;
+            }
+            layer.confirm('您确定要删除所选信息吗？', {
+                btn: ['确定', '取消'] //可以无限个按钮
+            }, function(index, layero){
+                //按钮【按钮一】的回调
+                $.ajax({
+                    url:url+"?id="+selectId,
+                    success:function(data){
+                        if(data.success){
+                            layer.msg( "删除成功");
+                            getContent(1);
+                        }else{
+                            layer.msg(data.message?data.message:"操作失败");
+                        }
+                    }
+                });
+            }, function(index){
+                //按钮【按钮二】的回调
+            });
+        };
+
+            selectProjectIndex=function(){
+                top.openDialog("选择项目","/cwgl/project/listForSelect?isIndex=true",1000,800);
+            };
+            selectedProjectIndex=function(data){
+                $("#SEARCH_AND_projectId_EQ").val(data.id);
+                $("#projectName").val(data.name);
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="layui-row">
+    @include("../../include/action.html"){};
+    <form class="layui-form" action="/cwgl/receive/list"  method="post"  id="receivePageForm"
+          onsubmit="return false;">
+        <input type="hidden" id="orderBy" name="orderBy" value=" id_desc"/>
+        <div class="test-table-reload-btn">
+            <div class="layui-inline">
+               状态：
+                <div class="layui-inline" >
+                    <select  class="layui-input"  id="SEARCH_AND_status_EQ"  name="SEARCH_AND_status_EQ" >
+                        <option value="">请选择</option>
+                        <option value="0">待审核</option>
+                        <option value="1">已审核</option>
+                    </select>
+                </div>
+                所属项目:
+                <div class="layui-inline" >
+                    <input class="layui-input"
+                           name="SEARCH_AND_projectId_EQ" type="hidden" id="SEARCH_AND_projectId_EQ" placeholder="请输入供应商ID"
+                    />
+                    <input type="search" class="layui-input"  readonly onclick="selectProjectIndex()" id="projectName"  name="projectName"  placeholder="请选择项目"  >
+                </div>
+                收款时间:
+                <div class="layui-inline" >
+                    <input type="search" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="layui-input search-between-date"  id="SEARCH_AND_receiveTime_GTE"  name="SEARCH_AND_receiveTime_GTE"  placeholder="请输入收款时间"  >
+               -
+                    <input type="search"  readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="layui-input search-between-date"   id="SEARCH_AND_receiveTime_LTE"  name="SEARCH_AND_receiveTime_LTE"  placeholder="请输入收款时间"  >
+                </div>
+               收款类型:
+                <div class="layui-inline" >
+                    <input type="hidden" class="layui-input"  id="SEARCH_AND_receiveType_EQ"  name="SEARCH_AND_receiveType_EQ"  placeholder="请输入收款类型"  >
+                    <input type="search" class="layui-input"  readonly="readonly" lay-filter="receiveTypeName"
+                           name="receiveTypeName" id="receiveTypeName" placeholder="请输入收款类型">
+                </div>
+                <button class="layui-btn"  onclick="getContent()">搜索</button>
+                <button  class="layui-btn layui-btn-primary" onclick="rest()">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="receivePageContent" style="padding-top: 10px;" lay-filter="receivePageTable"></div>
+</body>
+</html>

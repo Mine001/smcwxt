@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="detail-table">
+    <tr>
+
+        <th class="title">供应商名称:</th>
+        <td class="cell">
+            ${data.name!}
+        </td>
+        <th class="title">简称:</th>
+        <td class="cell">
+            ${data.shotrName!}
+        </td>
+    </tr>
+    <tr>
+        <th class="title">区域:</th>
+        <td class="cell">
+            ${data.region!}
+        </td>
+        <th class="title">地址:</th>
+        <td class="cell">
+            ${data.address!}
+        </td>
+
+
+    </tr>
+    <tr>
+
+        <th class="title">联系人:</th>
+        <td class="cell">
+            ${data.linkMan!}
+        </td>
+
+        <th class="title">联系电话:</th>
+        <td class="cell">
+            ${data.linkTel!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title">备注:</th>
+        <td class="cell" colspan="3">
+            ${data.remark!}
+        </td>
+
+    </tr>
+    <tr>
+        <th class="title">法人:</th>
+        <td class="cell">
+            ${data.legal!}
+        </td>
+
+        <th class="title">营业执照:</th>
+        <td class="cell">
+           <img src=" ${data.license!}" style="width: 80px;height: 80px;"/>
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title">银行账号:</th>
+        <td class="cell">
+            ${data.bankNo!}
+        </td>
+
+        <th class="title">开户行:</th>
+        <td class="cell">
+            ${data.openBank!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title">付款方式:</th>
+        <td class="cell">
+            ${data.payType!}
+        </td>
+
+        <th class="title">邮箱:</th>
+        <td class="cell">
+            ${data.email!}
+        </td>
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

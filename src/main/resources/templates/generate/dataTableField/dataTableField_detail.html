@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/ace/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/basic.css">
+</head>
+<body>
+<div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>字段别名:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                ${data.name!}
+            </div>
+        </div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>字段名:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                ${data.fieldName!}
+            </div>
+        </div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>字段类别:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                ${data.fieldType!}
+            </div>
+        </div>
+
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>字段长度:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                ${data.fieldLength!}
+            </div>
+        </div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>默认值:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                ${data.fieldValue!}
+            </div>
+        </div>
+
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>字段类型:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                ${data.fieldClassText!}
+            </div>
+        </div>
+
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>是否为空:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                @if(data.notNull){
+                    是
+                @}else{
+                    否
+                @}
+            </div>
+        </div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>是否列表显示:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                @if(data.isDisplay){
+                    是
+                @}else{
+                    否
+                @}
+            </div>
+        </div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>是否隐藏域:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                @if(data.isHidden){
+                    是
+                @}else{
+                    否
+                @}
+            </div>
+        </div>
+        <div class="col-xs-12  table-bordered">
+            <div class="panel-heading col-xs-2 text-right bg-info">
+                <h5>是否主键:</h5>
+            </div>
+            <div class="panel-body col-xs-10">
+                @if(data.isPrimary){
+                    是
+                @}else{
+                    否
+                @}
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+
+            <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+        </div>
+
+
+</div>
+
+</body>
+</html>

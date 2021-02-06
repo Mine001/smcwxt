@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/system/area/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden"
+               name="id" value="${data.id!}"/>
+        <input type="hidden"
+               name="isDelete" value="${data.isDelete!false}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="code"><font style='color:red;'>*</font>地区编码:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="code" type="text" id="code" placeholder="请输入地区编码"
+                       value="${data.code!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="name"><font style='color:red;'>*</font>名称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="name" type="text" id="name" placeholder="请输入名称"
+                       value="${data.name!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="level">级别:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="level" type="text" id="level" placeholder="请输入级别"
+                       value="${data.level!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="cityCode">城市编码:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="cityCode" type="text" id="cityCode" placeholder="请输入城市编码"
+                       value="${data.cityCode!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="center">中心点坐标:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="center" type="text" id="center" placeholder="请输入中心点坐标"
+                       value="${data.center!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="parentId">父节点ID:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="parentId" type="text" id="parentId" placeholder="请输入父节点ID"
+                       value="${data.parentId!}" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

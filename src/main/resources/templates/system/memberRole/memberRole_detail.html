@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/ace/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/basic.css">
+</head>
+<body>
+<div>
+    <div class="col-xs-12  table-bordered">
+        <div class="panel-heading col-xs-2 text-right bg-info">
+            <h5>名称:</h5>
+        </div>
+        <div class="panel-body col-xs-10">
+            ${data.name!}
+
+        </div>
+    </div>
+    <div class="col-xs-12  table-bordered">
+        <div class="panel-heading col-xs-2 text-right bg-info">
+            <h5>描述信息:</h5>
+        </div>
+        <div class="panel-body col-xs-10">
+            ${data.description!}
+
+        </div>
+    </div>
+    <div class="col-sm-12 text-center">
+
+        <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+    </div>
+
+
+</div>
+
+</body>
+</html>

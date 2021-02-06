@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="detail-table">
+    <tr>
+        <th class="title ">:</th>
+        <td class="cell">
+            ${data.id!}
+        </td>
+
+        <th class="title ">名称:</th>
+        <td class="cell">
+            ${data.name!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">编码:</th>
+        <td class="cell">
+            ${data.code!}
+        </td>
+
+        <th class="title ">上级:</th>
+        <td class="cell">
+            ${data.parentId!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">排序:</th>
+        <td class="cell">
+            ${data.seq!}
+        </td>
+
+        <th class="title ">备注:</th>
+        <td class="cell">
+            ${data.remark!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">是否删除:</th>
+        <td class="cell">
+            ${data.isDelete!}
+        </td>
+
+        <th class="title ">层级:</th>
+        <td class="cell">
+            ${data.level!}
+        </td>
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

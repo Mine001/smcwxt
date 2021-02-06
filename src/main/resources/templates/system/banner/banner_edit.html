@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/system/banner/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden"
+               required
+               name="id" value="${data.id!}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="title"><font style='color:red;'>*</font>标题:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="title" type="text" id="title" placeholder="请输入标题"
+                       value="${data.title!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="remark">备注:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为文本编辑器-->
+                <textarea class="layui-textarea"
+                          name="remark"   id="remark">${data.remark!}</textarea>
+                <script>
+                    CKEDITOR.replace( 'remark');
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="titleImg"><font style='color:red;'>*</font>标题图:</label>
+
+            <div class="layui-input-block">
+                <!--附件上传-->
+                <div  class="wu-example">
+                    <!--用来存放文件信息-->
+                    <input type="hidden"
+                           required lay-verify="required"
+                           name="titleImg" id="titleImg" value="${data.titleImg!}"/>
+                    <div class="uploader-list">
+                        <img id="titleImg_prew"  style="max-width: 120px;max-height: 120px;" src="${data.titleImg!}"></img>
+                    </div>
+                    <div class="btns">
+                        <div id="titleImg_picker">选择图片</div>
+                    </div>
+                </div>
+                <script>
+                    var uploader = WebUploader.create({
+                        // swf文件路径
+                        swf: '/webuploader/Uploader.swf',
+                        // 文件接收服务端。
+                        server: '/upload',
+                        // 选择文件的按钮。可选。
+                        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                        pick: '#titleImg_picker',
+                        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                        resize: false,
+                        // 选完文件后，是否自动上传。
+                        auto: true,
+                        multiple:false,
+                        // 只允许选择图片文件。
+                        accept: {
+                            title: '请选择标题图',
+                            extensions: 'gif,jpg,jpeg,bmp,png',
+                            mimeTypes: 'image/*'
+                        }
+                    });
+                    uploader.on( 'uploadSuccess', function( file ,response) {
+                        if(response.success){
+                            var data=response.data;
+                            $("#titleImg_prew").attr("src",data.fileUrl);
+                            $("#titleImg").val(data.fileUrl);
+                        }else{
+                            alert( data.message?data.message:"上传失败");
+                        }
+                    });
+
+                    uploader.on( 'uploadError', function( file ) {
+                        $( '#'+file.id ).find('p.state').text('上传出错');
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="outLink">外链接:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="outLink" type="text" id="outLink" placeholder="请输入外链接"
+                       value="${data.outLink!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="type"><font style='color:red;'>*</font>类型:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="type" type="text" id="type" placeholder="请输入类型"
+                       value="${data.type!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="seq">排序:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="seq" type="text" id="seq" placeholder="请输入排序"
+                       value="${data.seq!0}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="startTime">有效期开始时间:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input date-picker" name="startTime" type="text" id="startTime" placeholder="请输入有效期开始时间"
+                       value="${data.startTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="endTime">有效期结束时间:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input date-picker" name="endTime" type="text" id="endTime" placeholder="请输入有效期结束时间"
+                       value="${data.endTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

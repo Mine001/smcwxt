@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="layui-table detail-table">
+    <tr>
+
+
+        <th class="layui-bg-gray " style="width: 15%;">地区编码:</th>
+        <td class="layui-col-md4">
+            ${data.code!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">名称:</th>
+        <td class="layui-col-md4">
+            ${data.name!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">级别:</th>
+        <td class="layui-col-md4">
+            ${data.level!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">城市编码:</th>
+        <td class="layui-col-md4">
+            ${data.cityCode!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">中心点坐标:</th>
+        <td class="layui-col-md4">
+            ${data.center!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">父节点ID:</th>
+        <td class="layui-col-md4">
+            ${data.parentId!}
+        </td>
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

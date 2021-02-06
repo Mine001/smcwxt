@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script>
+
+        function selectSupplier(){
+            top.openDialog("选择供应商","/cwgl/supplier/listForSelect",1000,800);
+        }
+        function selectedSupplier(data){
+            $("#supplierId").val(data.id);
+            $("#supplierName").val(data.name);
+        }
+        function addReceipForm(){
+            if($("#supplierId").val()==""){
+                layer.msg("请先选择供应商");
+                return;
+            }
+            top.openDialog("选择签收单","/cwgl/receiptForm/listForSelect?SEARCH_AND_status_EQ=0&SEARCH_AND_supplierId_EQ="+$("#supplierId").val(),1000,800);
+        }
+        var totalMoney=0;
+        function selectedReceiptForm(selectedDatas){
+            for(var i=0;i<selectedDatas.length;i++){
+                var data=selectedDatas[i];
+                $("#receipForm_"+data.id).remove();
+                $("#totalMoney").before(
+                $("<tr>").append($("<td>").append(data.projectName).append($("<input type='hidden' name='receiptFormIds' >").val(data.id)))
+                    .append($("<td>").append(data.receiptTime))
+                    .append($("<td>").append(data.receiptContent))
+                    .append($("<td class='pay_money'>").append(data.money-data.hasPay))
+                    .append($("<td>").append("<input type='button' class='layui-btn layui-btn-xs layui-btn-radius layui-btn-danger'  onclick='delReceiptForm("+data.id+")' value='删除'/>"))
+                    .attr("id","receipForm_"+data.id)
+                );
+            }
+            getTotalMoney();
+        }
+        function getTotalMoney(){
+            totalMoney=0;
+            $(".pay_money").each(function(){
+                totalMoney=totalMoney+parseFloat($(this).text());
+            });
+            $("#totalMoneyText").text(totalMoney);
+        }
+        function delReceiptForm(id){
+            layer.confirm('您确定要删除所选信息吗？', {
+                btn: ['确定', '取消'] //可以无限个按钮
+            }, function(index, layero){
+                //按钮【按钮一】的回调
+                $("#receipForm_"+id).remove();
+                getTotalMoney();
+                layer.close(index);
+            }, function(index){
+                //按钮【按钮二】的回调
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/cwgl/payment/saveNew" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden"
+               name="id" value="${data.id!}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="supplierId"><font style='color:red;'>*</font>供应商:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="supplierId" type="hidden" id="supplierId" placeholder="请输入供应商ID"
+                       value="${data.supplierId!}" />
+                <input class="layui-input"  readonly onclick="selectSupplier()"  required lay-verify="required"
+                       name="supplierName" type="text" id="supplierName" placeholder="请选择供应商"
+                       value="${data.supplierName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="supplierId">签收单:</label>
+
+            <div class="layui-input-block">
+                <table class="layui-table" id="receipForms">
+                    <tr>
+                        <td>项目</td>
+                        <td>签收日期</td>
+                        <td>签收内容</td>
+                        <td>总金额</td>
+                        <td><input type="button" class="layui-btn layui-btn-normal" value="新增" onclick="addReceipForm()"/></td>
+                    </tr>
+                    @var totalMoney=0;
+                    @if(has(receiptFormList)){
+                    @for(item in receiptFormList){
+                    @totalMoney=totalMoney+item.money-item.hasPay;
+                    <tr id="receipForm_${item.id}">
+                        <td>${item.projectName}
+                            <input type="hidden" name="receiptFormIds" value="${item.id}">
+                        </td>
+                        <td>${item.receiptTime!,dateFormat="yyyy-MM-dd"}</td>
+                        <td>${item.receiptContent}</td>
+                        <td class="pay_money">${item.money-item.hasPay}</td>
+                        <td>
+                            <input type="button" class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger" onclick="delReceiptForm(${item.id})" value="删除">
+                        </td>
+                    </tr>
+                    @}
+                    @}
+                    <tr id="totalMoney">
+                        <td>合计</td>
+                        <td colspan="4" id="totalMoneyText">${totalMoney!0}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="payTime">付款时间:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input date-picker" name="payTime" type="text" id="payTime" placeholder="请输入付款时间"
+                       value="${data.payTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="payMoney"><font style='color:red;'>*</font>付款金额:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input" required lay-verify="required|number"
+                       name="payMoney" type="text" id="payMoney" placeholder="请输入付款金额"
+                       value="${data.payMoney!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="payContent">付款内容:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   class="layui-textarea"
+                            name="payContent"  id="payContent" rows="5" cols="30">${data.payContent!}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="payType">付款类型:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="payType" type="hidden" id="payType" placeholder="请输入付款类型"
+                       value="${data.payType!}" />
+                <input class="layui-input" readonly="readonly" lay-filter="payTypeName"
+                       name="payTypeName" type="text" id="payTypeName" placeholder="请输入付款类型"
+                       value="${data.payTypeName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiver">收款方:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="receiver" type="text" id="receiver" placeholder="请输入收款方"
+                       value="${data.receiver!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="invoiceId">发票:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="invoiceId" type="text" id="invoiceId" placeholder="请输入发票ID"
+                       value="${data.invoiceId!}" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.config({
+        base: '/layui/layui_exts/',
+    }).extend({
+        treeSelect:'treeSelect/treeSelect'
+    }).use(['treeSelect','form'], function(){
+        var form = layui.form;
+        var treeSelect= layui.treeSelect;
+        treeSelect.render({
+            // 选择器
+            elem: '#payTypeName',
+            // 数据
+            data: '/system/dataDict/listForTreeSelect?pId=63',
+            // 异步加载方式：get/post，默认get
+            type: 'get',
+            // 占位符
+            placeholder: '请选择付款类型',
+            // 是否开启搜索功能：true/false，默认false
+            search: true,
+            // 点击回调
+            click: function(d){
+                $("#payType").val(d.current.id);
+            },
+            style: {
+                folder: {
+                    enable: true
+                },
+                line: {
+                    enable: true
+                }
+            },
+            // 加载完成后的回调函数
+            success: function (d) {
+//                选中节点，根据id筛选
+                    treeSelect.checkNode('payTypeName', ${data.payType!});
+//                获取zTree对象，可以调用zTree方法
+//                var treeObj = treeSelect.zTree('payTypeName');
+//                console.log(treeObj);
+
+//                刷新树结构
+//                treeSelect.refresh();
+            }
+        });
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            var message="";
+            if(parseFloat($("#payMoney").val())>totalMoney){
+                message="输入金额大于合计金额,您确定要提交吗？";
+            }
+            if(parseFloat($("#payMoney").val())<totalMoney){
+                message="输入金额小于合计金额，您确定要提交吗？";
+            }
+            if(message!=""){
+                layer.confirm(message, {
+                    btn: ['确定', '取消'] //可以无限个按钮
+                }, function(index, layero){
+                    //按钮【按钮一】的回调
+                    $("#editForm").ajaxSubmit(function(data){
+                        if(data.success){
+                            layer.msg( data.message?data.message:"操作成功");
+                            top.closeDialog(true);
+                        }else{
+                            layer.msg( data.message?data.message:"操作失败");
+                        }
+                    });
+                    layer.close(index);
+                }, function(index){
+                    //按钮【按钮二】的回调
+                });
+            }else{
+                $("#editForm").ajaxSubmit(function(data){
+                    if(data.success){
+                        layer.msg( data.message?data.message:"操作成功");
+                        top.closeDialog(true);
+                    }else{
+                        layer.msg( data.message?data.message:"操作失败");
+                    }
+                });
+            }
+
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

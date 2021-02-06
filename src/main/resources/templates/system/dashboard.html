@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>hulqFrame--后台管理</title>
+    <meta name="description" content="overview &amp; stats" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}ace/assets/css/jquery-ui.min.css" />
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <style>
+        #menus::-webkit-scrollbar {
+            display: none; /* Chrome Safari */
+        }
+
+        #menus {
+            scrollbar-width: none; /* firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: 100%;
+        }
+        #page-content{
+            margin: 10px;
+        }
+
+    </style>
+</head>
+
+<body style="overflow: hidden;">
+<div class="">
+
+    <div class="layui-row" style="background: white;margin-top: 2px;">
+        <div class="layui-col-md12" >
+            <div class="layui-row layui-header header header-doc" style="background:  #393D49;">
+                    <ul class="layui-nav" style="right: 0;position: absolute;">
+<!--                    <li class="layui-nav-item" >-->
+<!--                        <a href="">控制台<span class="layui-badge">9</span></a>-->
+<!--                    </li>-->
+                    <li class="layui-nav-item">
+                        <a href=""><img src="${ctx}images/headerImg.png" class="layui-nav-img">个人中心</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:updateInfo();">修改信息</a></dd>
+                            <dd><a href="javascript:updatePas();">修改密码</a></dd>
+                            <dd><a href="javascript:loginOut();">退出</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+                <div  style="margin-left: 3%; width:50%; background-color: #393D49 !important;font-size: 18px;font-weight: bold;color: white;line-height:60px;">${aboutUs.companyName!''}财务管理系统</div>
+
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="  layui-col-md2 layui-side-scroll" >
+
+                <ul class="layui-nav layui-nav-tree" id="menus" lay-filter="menu">
+                    @for(menu in menus){
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">${menu.name!}</a>
+                        @if(!isEmpty(menu.children)){
+                        <dl class="layui-nav-child">
+                            @for(item in menu.children){
+                            <dd><a  id="menu_${item.id}" onclick="openMenu('${item.url}','${item.id}','${item.name!}')">  ${item.name}</a></dd>
+                            @}
+                        </dl>
+                        @}
+                    </li>
+                    @}
+                </ul>
+            </div>
+            <div class="layui-col-md10">
+                <div id="page-content" ></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="${ctx}ace/assets/js/jquery-2.1.4.min.js"></script>
+<script src="${ctx}ace/assets/js/jquery-ui.min.js"></script>
+<script src="${ctx}layui/layui.js"></script>
+<script type="text/javascript">
+    //一般直接写在一个js文件中
+    layui.config({
+        base : '/layui/layui_exts/'
+    }).extend({
+        treeTable : 'treeTable/treeTable',
+        interact:'interact/interact',
+        treeSelect:'treeSelect/treeSelect'
+    });
+    layui.use(['layer', 'form','element','jquery'], function(){
+        var layer = layui.layer
+            ,form = layui.form;
+        var element = layui.element;
+        //一些事件监听
+        element.on('tab(demo)', function(data){
+            console.log(data);
+        });
+       ;
+        $("#page-content").height( $(document).height()-62);
+        $("#menus").height(  $("#page-content").height());
+
+        $("#menus").find(".layui-nav-item").eq(0).addClass("layui-nav-itemed");
+        $("[id^='menu_']").eq(0).click();
+
+        $("[id^='menu_']").on("click",function(){
+            $("#menus").find(".layui-nav-item").removeClass("layui-nav-itemed");
+            $(this).parents("li:eq(0)").addClass("layui-nav-itemed");
+        });
+        $("#menus").find(".layui-nav-item").on("click",function(){
+            $("#menus").find(".layui-nav-item").removeClass("layui-nav-itemed");
+            $(this).addClass("layui-nav-itemed");
+        });
+        loginOut=function(){
+            layer.confirm('您确定要退出本次登录吗？', {
+                btn: ['确定', '取消'] //可以无限个按钮
+            }, function(index, layero){
+                //按钮【按钮一】的回调
+                window.location.href="${ctx}logout";
+            }, function(index){
+                //按钮【按钮二】的回调
+            });
+        };
+    });
+
+    function updateInfo(){
+        openDialog("修改用户信息",'/system/user/editInfo',800,600);
+    }
+    function updatePas(){
+        openDialog("修改用户密码",'/system/user/editPass',800,600);
+    }
+    function openMenu(url,menuId,menuName){
+        $("#active_menu").text(menuName);
+        if(url.indexOf("?")>=0){
+            url="${ctx}"+url+"&menuId="+menuId;
+        }else{
+            url="${ctx}"+url+"?menuId="+menuId;
+        }
+        $.ajax({
+            url:url,
+            dataType:"html",
+            success:function(data){
+                $("#page-content").html(data);
+            }
+        });
+    }
+    var dialogs=[];
+    var wins=[];
+    function openDialog(title,url,width,height){
+        var inx=layer.open({
+            type: 2,
+            title:title,
+            area: [width+'px', height+'px'], //自定义文本域宽高
+            content: url,
+            success: function(layero, index){
+                var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                wins.push(iframeWin);
+            },cancel: function(){
+                //右上角关闭回调
+                var dialog=dialogs.pop();
+                var win=wins.pop();
+                //return false 开启该代码可禁止点击该按钮关闭
+            }
+        });
+        dialogs.push(inx);
+        // var dialog=$('<div style="overflow: hidden;"><iframe src="${ctx}'+url+'" width="100%" height="100%" frameborder="0"/></div>');
+        // $(dialog).dialog({
+        //     title:title,
+        //     width:width,
+        //     height:height,
+        //     autoOpen: true,
+        //     modal: true,
+        //     dialogClass: "no-close",
+        //     //隐藏默认的关闭按钮
+        //     open: function (event, ui) {
+        //         $(".ui-button-text").hide();
+        //     },
+        //     close:function(event,ui){
+        //         dialogs.pop();
+        //     }
+        // });
+        // dialogs.push(dialog);
+    }
+    function closeDialog(isInit){
+       var dialog=dialogs.pop();
+        var win=wins.pop();
+       layer.close(dialog);
+       if(isInit){
+           init();
+       }
+    }
+    function closeCurrentDialog(isInit){
+        var dialog=dialogs.pop();
+        var win=wins.pop();
+        if(isInit){
+            win=wins.pop();
+            if(win){
+                win.init();
+            }
+            wins.push(win);
+        }
+        layer.close(dialog);
+    }
+    function selectedProject(d,isIndex){
+        if(isIndex){
+            var dialog=dialogs.pop();
+            var win=wins.pop();
+            layer.close(dialog);
+            selectedProjectIndex(d);
+        }else{
+            var dialog=dialogs.pop();
+            var win=wins.pop();
+            win=wins.pop();
+            if(win){
+                win.selectedProject(d);
+            }
+            wins.push(win);
+            layer.close(dialog);
+        }
+
+    }
+    function selectedSupplier(d,isIndex){
+        if(isIndex){
+            var dialog=dialogs.pop();
+            var win=wins.pop();
+            layer.close(dialog);
+            selectedSupplierIndex(d);
+        }else{
+            var dialog=dialogs.pop();
+            var win=wins.pop();
+            win=wins.pop();
+            if(win){
+                win.selectedSupplier(d);
+            }
+            wins.push(win);
+            layer.close(dialog);
+        }
+    }
+    function selectedReceiptForm(selectedReceiptForm){
+        var dialog=dialogs.pop();
+        var win=wins.pop();
+        win=wins.pop();
+        if(win){
+            win.selectedReceiptForm(selectedReceiptForm);
+        }
+        wins.push(win);
+        layer.close(dialog);
+    }
+
+</script>
+</body>
+</html>

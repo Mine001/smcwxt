@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户表</title>
+    <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/tableStyle.js"></script>
+    <script>
+        layui.use('table', function(){
+            var table = layui.table;
+            var clos=[];
+
+            //第一个实例
+            var tableIns=table.render({
+                elem: '#pageContent'
+                ,url: '/system/user/list' //数据接口
+                ,where:$("#pageForm").serializeJson()
+                ,request:{
+                    pageName: 'pageNum', //页码的参数名称，默认：page
+                    limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                }
+                ,page: true //开启分页
+                ,cols: [[ //表头
+                    {title: '序号', width:80, templet: function (d) {
+                            return d.LAY_TABLE_INDEX+1
+                        }}
+                    ,{field: 'userName', title: '用户名'}
+                    ,{field: 'account', title: '账号'}
+                    ,{field: 'mobile', title: '手机'}
+                ]]
+            });
+            //监听行单击事件
+            table.on('row(pageContent)', function(obj){
+                $(".selected").removeClass("selected");
+                $(obj.tr).addClass("selected");
+                selectId=obj.data.id;
+            });
+            init=function(){
+                getContent(1);
+            };
+            getContent=function(pageNum){
+                selectId=undefined;
+                tableIns.reload({
+                    where:$("#pageForm").serializeJson()
+                });
+            };
+            rest=function(){
+                $("#SEARCH_AND_account_LIKE").val("");
+                $("#SEARCH_AND_userName_LIKE").val("");
+                getContent(1);
+            }
+            add=function(title,url,width,height){
+                top.openDialog(title,url,width,height)
+            };
+
+
+            edit=function(title,url,width,height){
+                if(!selectId){
+                    layer.msg("请选择需要修改的记录");
+                    return;
+                }
+                top.openDialog(title,url+"?id="+selectId,width,height)
+            };
+            detail=function(title,url,width,height){
+                if(!selectId){
+                    layer.msg("请选择需要查看的记录");
+                    return;
+                }
+                top.openDialog(title,url+"/"+selectId,width,height)
+            };
+            del=function(title,url,width,height) {
+                if(!selectId){
+                    layer.msg("请选择需要删除的记录");
+                    return;
+                }
+                layer.confirm('您确定要删除所选信息吗？', {
+                    btn: ['确定', '取消'] //可以无限个按钮
+                }, function(index, layero){
+                    //按钮【按钮一】的回调
+                    $.ajax({
+                        url:url+"?id="+selectId,
+                        success:function(data){
+                            if(data.success){
+                                layer.msg( "删除成功");
+                                getContent(1);
+                            }else{
+                                layer.msg(data.message?data.message:"操作失败");
+                            }
+                        }
+                    });
+                }, function(index){
+                    //按钮【按钮二】的回调
+                });
+            };
+        });
+    </script>
+</head>
+<body>
+<div class="layui-row">
+    @include("../../include/action.html"){};
+    <form class="layui-form" action="/system/user/list"  method="post"  id="pageForm"
+          onsubmit="return false;">
+        <input type="hidden" id="pageNum" name="pageNum" value="1"/>
+        <input type="hidden" id="pageSize" name="pageSize" value="10"/>
+        <input type="hidden" id="orderBy" name="orderBy" value=" id_desc"/>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">用户名:</label>
+                <div class="layui-input-inline" >
+                <input type="search" class="layui-input" id="SEARCH_AND_userName_LIKE"
+                                            name="SEARCH_AND_userName_LIKE"  placeholder=""  >
+                </div>
+                <label class="layui-form-label">账号:</label>
+                <div class="layui-input-inline" >
+                <input type="search" class="layui-input" id="SEARCH_AND_account_LIKE"
+                                            name="SEARCH_AND_account_LIKE"  placeholder=""  >
+                </div>
+<!--            <label>名称:<input type="search" id="SEARCH_AND_name_LIKE" name="SEARCH_AND_name_LIKE"  placeholder=""  ></label>-->
+<!--            <label>数据库表名:<input type="search"  id="SEARCH_AND_tableName_LIKE" name="SEARCH_AND_tableName_LIKE" placeholder=""  ></label>-->
+                <div class="layui-input-inline">
+                    <button class="layui-btn"  onclick="getContent()">搜索</button>
+                    <button  class="layui-btn layui-btn-primary" onclick="rest()">重置</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<table id="pageContent" style="padding-top: 10px;"  class="layui-table"  lay-filter="pageContent"></table>
+</body>
+</html>

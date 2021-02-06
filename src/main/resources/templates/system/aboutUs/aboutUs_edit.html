@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/system/aboutUs/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden"
+               name="id" value="${data.id!}"/>
+        @if(type==1){
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="companyName"><font style='color:red;'>*</font>公司名称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="companyName" type="text" id="companyName" placeholder="请输入公司名称"
+                       value="${data.companyName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="distribution">公司介绍:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为文本编辑器-->
+                <textarea class="layui-textarea"
+                          name="distribution"   id="distribution">${data.distribution!}</textarea>
+                <script>
+                    CKEDITOR.replace( 'distribution');
+                </script>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="address">地址:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="address" type="text" id="address" placeholder="请输入地址"
+                       value="${data.address!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="linkTel">联系电话:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="linkTel" type="text" id="linkTel" placeholder="请输入联系电话"
+                       value="${data.linkTel!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="linkMan">联系人:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="linkMan" type="text" id="linkMan" placeholder="请输入联系人"
+                       value="${data.linkMan!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="email">邮箱:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="email" type="text" id="email" placeholder="请输入邮箱"
+                       value="${data.email!}" />
+            </div>
+        </div>
+
+        @}
+        @if(type==2){
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="registerAgreement">注册协议:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为文本编辑器-->
+                <textarea class="layui-textarea"
+                          name="registerAgreement"   id="registerAgreement">${data.registerAgreement!}</textarea>
+                <script>
+                    CKEDITOR.replace( 'registerAgreement');
+                </script>
+            </div>
+        </div>
+        @}
+        @if(type==3){
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="softMessage">软件信息:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为文本编辑器-->
+                <textarea class="layui-textarea"
+                          name="softMessage"   id="softMessage">${data.softMessage!}</textarea>
+                <script>
+                    CKEDITOR.replace( 'softMessage');
+                </script>
+            </div>
+        </div>
+        @}
+        <input type="hidden"
+               name="createTime" value="${data.createTime!}"/>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

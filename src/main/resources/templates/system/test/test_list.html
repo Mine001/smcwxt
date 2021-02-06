@@ -1,0 +1,65 @@
+<table  class="layui-table">
+    <thead>
+    <tr role="row">
+        <th class="center sorting_disabled" width="60px" rowspan="1" colspan="1" aria-label="">
+            序号
+        </th>
+        <th class="center sorting_disabled" rowspan="1" colspan="1">
+            标题
+        </th>
+        <th class="center sorting_disabled" rowspan="1" colspan="1">
+            地址
+        </th>
+        <th class="center sorting_disabled" rowspan="1" colspan="1">
+            标题111
+        </th>
+        <th class="center sorting_disabled" rowspan="1" colspan="1">
+            生日
+        </th>
+        <th class="center sorting_disabled" rowspan="1" colspan="1">
+            标题图
+        </th>
+    </tr>
+    </thead>
+
+
+    <tbody>
+        @for(item in page.list){
+        <tr role="row">
+            <td class="center">
+                <input type="hidden" value="${item.id}"/>
+                ${itemLP.index}
+            </td>
+            <td class="center">
+                ${item.title!}
+            </td>
+            <td class="center">
+                ${item.address!}
+            </td>
+            <td class="center">
+                ${item.titleAddress!}
+            </td>
+            <td class="center">
+                ${item.birthday!,dateFormat='yyyy-MM-dd'}
+            </td>
+            <td class="center">
+                ${item.titleImg!}
+            </td>
+        </tr>
+        @}
+    </tbody>
+</table>
+<div class="pagination" id="Pagination" >
+
+</div>
+<script>
+    layui.use('laypage', function(){
+        var laypage = layui.laypage;
+
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'Pagination' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count: ${page.pages} //数据总数，从服务端得到
+        });
+    });
+</script>

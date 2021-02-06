@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>签收单</title>
+    <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/tableStyle.js"></script>
+
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script>
+        layui.use(['table','form'], function(){
+            var table = layui.table;
+            var form = layui.form;
+            var clos=[];
+            var initData=[];
+            form.render(); //更新全部
+            //第一个实例
+            var tableIns=table.render({
+                    elem: '#receiptFormPageContent'
+                    ,url: '/cwgl/receiptForm/list' //数据接口
+                    ,where:$("#receiptFormPageForm").serializeJson()
+                    ,request:{
+                        pageName: 'pageNum', //页码的参数名称，默认：page
+                        limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                    }
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {type:'checkbox'},
+                        {title: '序号', width:80, templet: function (d) {
+                            return d.LAY_TABLE_INDEX+1
+                        }}
+                            ,{field: 'projectName', title: '项目'}
+                            ,{field: 'receiptTime', title: '签收日期'}
+                            ,{field: 'receiptContent', title: '签收内容'}
+                            ,{field: 'money', title: '总金额'}
+                            ,{field: 'hasPay', title: '剩余金额',templet: function (d) {
+                            return d.money-d.hasPay;
+                        }}
+                    ]],done: function(res, curr, count){
+                        initData= res.data;//所有数据
+                    }
+        });
+        var selectDatas =[];
+        table.on('checkbox(receiptFormPageContent)', function(obj){
+            if(obj.checked==true){
+                if(obj.type=='one'){
+                    selectDatas.push(obj.data);
+                }else{
+                    for(var i=0;i<initData.length;i++){
+                        selectDatas.push(initData[i]);
+                    }
+                }
+            }else{
+                if(obj.type=='one'){
+                    for(var i=0;i<selectDatas.length;i++){
+                        if(selectDatas[i].id==obj.data.id){
+                            selectDatas.splice(i,1);
+                        }
+                    }
+                }else{
+                    selectDatas=[];
+                }
+            }
+        });
+
+        init=function(){
+            getContent(1);
+        };
+        getContent=function(pageNum){
+            selectId=undefined;
+            tableIns.reload({
+                where:$("#receiptFormPageForm").serializeJson()
+        });
+        };
+        rest=function(){
+            $("#SEARCH_AND_projectId_EQ").val("");
+            $("#projectName").val("");
+            $("#SEARCH_AND_receiptContent_LIKE").val("");
+            $("#SEARCH_AND_receiptTime_GTE").val("");
+            $("#SEARCH_AND_receiptTime_LTE").val("");
+            $("#SEARCH_AND_status_EQ").val("");
+            form.render(); //更新全部
+            getContent(1);
+        };
+            selectProject=function(){
+                top.openDialog("选择项目","/cwgl/project/listForSelect?isIndex=false",1000,800);
+            };
+            selectedProject=function(data){
+                $("#SEARCH_AND_projectId_EQ").val(data.id);
+                $("#projectName").val(data.name);
+            }
+
+            selectComfirm=function(){
+                top.selectedReceiptForm(selectDatas);
+            };
+        });
+    </script>
+</head>
+<body>
+<div class="layui-row">
+    @include("../../include/action.html"){};
+    <form class="layui-form" action="/cwgl/receiptForm/list"  method="post"  id="receiptFormPageForm"
+          onsubmit="return false;">
+        <input type="hidden" id="orderBy" name="orderBy" value=" id_desc"/>
+        <input class="layui-input"
+               name="SEARCH_AND_supplierId_EQ" type="hidden" value="${SEARCH_AND_supplierId_EQ!}" id="SEARCH_AND_supplierId_EQ" placeholder="请输入供应商ID"
+        />
+        <input class="layui-input"
+               name="SEARCH_AND_status_EQ" type="hidden" value="${SEARCH_AND_status_EQ!}" id="SEARCH_AND_status_EQ" placeholder="请输入供应商ID"
+        />
+        <div class="test-table-reload-btn">
+            <div class="layui-inline">
+                所属项目:
+                <div class="layui-inline" >
+                    <input class="layui-input"
+                           name="SEARCH_AND_projectId_EQ" type="hidden" id="SEARCH_AND_projectId_EQ" placeholder="请输入供应商ID"
+                    />
+                    <input type="search" class="layui-input"  readonly onclick="selectProject()" id="projectName"  name="projectName"  placeholder="请选择项目"  >
+                </div>
+                签收内容:
+                <div class="layui-inline" >
+                    <input type="search" class="layui-input"  id="SEARCH_AND_receiptContent_LIKE"  name="SEARCH_AND_receiptContent_LIKE"  placeholder="请输入签收内容"  >
+                </div>
+                签收日期:
+                <div class="layui-inline" >
+                    <input type="search" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="layui-input search-between-date"  id="SEARCH_AND_receiptTime_GTE"  name="SEARCH_AND_receiptTime_GTE"  placeholder="请输入签收日期"  >
+                    -
+                    <input type="search" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="layui-input search-between-date"  id="SEARCH_AND_receiptTime_LTE"  name="SEARCH_AND_receiptTime_LTE"  placeholder="请输入签收日期"  >
+                </div>
+                <!--            <label>名称:<input type="search" id="SEARCH_AND_name_LIKE" name="SEARCH_AND_name_LIKE"  placeholder=""  ></label>-->
+
+                <button class="layui-btn"  onclick="getContent()">搜索</button>
+                <button  class="layui-btn layui-btn-primary" onclick="rest()">重置</button>
+                <button  class="layui-btn layui-btn-primary" onclick="selectComfirm()">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="receiptFormPageContent" style="padding-top: 10px;" lay-filter="receiptFormPageContent"></div>
+</body>
+</html>

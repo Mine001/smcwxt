@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/ace/assets/css/bootstrap.min.css" />
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/static/ace/assets/js/jquery.validate.min.js"></script>
+    <script src="${ctx}js/jquery.serializejson.min.js"></script>
+    <script src="${ctx}js/icheck.min.js"></script>
+    <script src="${ctx}ace/assets/js/bootstrap.min.js"></script>
+    <script src="${ctx}ace/assets/js/bootbox.js"></script>
+    <script src="/js/bootstrap-treeview.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="form-horizontal" action="/generate/dataTable/generate" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden" name="tableId" value="${data.id!}"/>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="name">别名</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="name" type="text" id="name" placeholder="请输入名称"
+                       value="${data.name!}" readonly="readonly"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="tableName">表名称</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="tableName" type="text" id="tableName" placeholder="请输入表名称"
+                       value="${data.tableName!}"  readonly="readonly"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="className">类名</label>
+            <div class="col-xs-10">
+                <input id="className" class="form-control" name="className"   placeholder="请输入类名" value="${className!}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="packageName">包名</label>
+            <div class="col-xs-10">
+                <input id="packageName" class="form-control" name="packageName"   placeholder="请输入包名，入com.hulqframe.test" value="${packageName!}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="catalog">菜单所属目录</label>
+            <div class="col-xs-10">
+                <select id="catalog" name="catalog" class="form-control">
+                    <option value="">请选择</option>
+                    @for(catalog in catalogs){
+                        <option value="${catalog.id}">${catalog.name}</option>
+                    @}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-2 control-label">是否自动生成菜单</label>
+            <div class="col-xs-10">
+                <label class="radio-inline">
+                    <input type="radio" name="isCreateMenu" value="true">是</input>
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="isCreateMenu" value="false" checked>否</input>
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">搜索条件</label>
+            <div class="col-xs-10">
+                <table id="conditiion-table" class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>字段</th>
+                        <th>匹配类型</th>
+                        <th>逻辑关系</th>
+                        <th>
+                            <div class="btn-group">
+                                <button class="btn btn-xs btn-info" onclick="addCondition()">
+                                    <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                    新增
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label">生成代码</label>
+            <div class="col-xs-10">
+                @for(codeType in codeTypes){
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="createCodeTypes_${codeType.value}" name="createCodeTypes" value="${codeType.value}"> ${codeType.text}
+                </label>
+                @}
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="apiPackageName">接口类包名</label>
+            <div class="col-xs-10">
+                <input id="apiPackageName" class="form-control" name="apiPackageName"   placeholder="请输入接口包名，入com.hulqframe.api.test" value="${apiPackageName!}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="apiPrefix">接口前缀</label>
+            <div class="col-xs-10">
+                <input id="apiPrefix" class="form-control" name="apiPrefix"   placeholder="请输入接口前缀，入/api" value="${apiPrefix!}"/>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success" type="button" onclick="save()" >保存</button>
+            <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+<table style="display: none;">
+    <tr id="condition_demo">
+        <td>
+            <select name="fieldNames" class="form-control" onchange="selectField(this)">
+                <option value="">请选择</option>
+                @for(field in dataTableFields){
+                <option value="${field.fieldName}">${field.name}</option>
+                @}
+            </select>
+            <input type="hidden" name="names">
+        </td>
+        <td>
+            <select name="matchTypes" class="form-control">
+                <option value="">请选择</option>
+                @for(matchType in matchTypes){
+                <option value="${matchType.key}">${matchType.desc}</option>
+                @}
+            </select>
+        </td>
+        <td>
+            <select name="andOrs" class="form-control">
+                <option value="AND">AND</option>
+                <option value="OR">OR</option>
+            </select>
+        </td>
+        <td>
+            <div class="action-buttons">
+                <a class="red" href="javascript:removeCondition(this)">
+                    <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                    删除
+                </a>
+            </div>
+
+        </td>
+    </tr>
+</table>
+</div>
+<script>
+    var confirmCount=0,hasConfrim=0;
+    function save(){
+        $('#editForm').submit();
+    }
+    function selectField(obj){
+        $(obj).parents("td:eq(0)").find("input[name='names']").val($(obj).find("option:selected").text());
+    }
+    function removeCondition(obj){
+        $(obj).parents("tr:eq(0)").remove();
+    }
+    function addCondition(){
+
+        $("#conditiion-table").append($('<tr>').html($("#condition_demo").html()));
+    }
+
+    function checkFiles(form){
+       var createCodeTypes=[];
+       $("input[name='createCodeTypes']:checked").each(function(){
+           createCodeTypes.push($(this).val());
+       });
+
+        $.ajax({
+            url:"${ctx}generate/dataTable/checkFiles",
+            data:{
+                "createCodeTypes":createCodeTypes,
+                "className":$("#className").val(),
+                "packageName":$("#packageName").val(),
+                "catalog":$("#catalog").val()
+            },
+            traditional:true,
+            dataType:"JSON",
+            success:function(data){
+                if(data.success){
+                    if($("input[name='createCodeTypes']:checked").length<=0){
+                        bootbox.alert("请选择要生成的代码");
+                        return;
+                    }
+                    $(form).ajaxSubmit(function(data){
+                        if(data.success){
+                            alert( data.message?data.message:"操作成功");
+                            top.closeDialog(true);
+                        }else{
+                            alert( data.message?data.message:"操作失败");
+                        }
+                    });
+                }else{
+                    hasConfrim=0;
+                    var ms=data.data;
+                    confirmCount=ms.length;
+                    for(var i=0;i<ms.length;i++){
+                        confirmCheck(ms[i]);
+                    }
+
+                }
+            }
+        });
+    }
+    function afterConfirm(){
+
+        if(hasConfrim==confirmCount){
+            if($("input[name='createCodeTypes']:checked").length<=0){
+                bootbox.alert("请选择要生成的代码");
+                return;
+            }
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    alert( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    alert( data.message?data.message:"操作失败");
+                }
+            });
+        }
+    }
+    function confirmCheck(obj){
+        var codeType=obj.type;
+        bootbox.confirm({
+            title: "提示信息",
+            message: obj.msg,
+            buttons: {
+                cancel: {
+                    label: '<i class="fa fa-times"></i> 否',
+                    className: 'btn-danger'
+                },
+                confirm: {
+                    label: '<i class="fa fa-check"></i> 是',
+                    className: 'btn-success'
+                }
+            },
+            callback: function (result) {
+
+                if(!result){
+                    $("#createCodeTypes_"+codeType).iCheck('toggle');
+                }
+                hasConfrim=hasConfrim+1;
+                afterConfirm();
+            }
+        });
+    }
+    $(document).ready(function(){
+        $('#editForm').validate({
+            errorElement : 'span',
+            errorClass : 'help-block',
+            focusInvalid : false,
+            rules : {
+                className : {
+                    required : true,
+                    maxlength: 30
+                },
+                packageName : {
+                    required : true,
+                    maxlength: 100
+                },
+                catalog: {
+                    required : true,
+                }
+            },
+            messages : {
+                className : {
+                    required : "请输入类名",
+                    maxlength: "类名的长度不能大于30"
+                },
+                packageName : {
+                    required : "请输入包名",
+                    maxlength: "包名称长度不能大于100"
+                },
+                catalog: {
+                    required : "请选择所属目录"
+                }
+            },
+            highlight : function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success : function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement : function(error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler : function(form) {
+                if($("input[name='createCodeTypes']:checked").length<=0){
+                    bootbox.alert("请选择要生成的代码");
+                    return;
+                }
+                checkFiles(form);
+
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<div style="text-align: right;margin-right: 10px;margin-bottom: 20px;">
+    @if(has(actions)){
+@for(action in actions){
+<button type="button" class="layui-btn  layui-btn-sm" onclick="${action.action}('${action.name}','${action.url}',800,600)">${action.name}</button>
+@}
+    @}
+</div>

@@ -1,0 +1,100 @@
+<table  class="layui-table">
+    <thead>
+    <tr role="row">
+        <th lay-data="{field:'index', width:80}">
+            序号
+        </th>
+        <th lay-data="{field:'name'}">
+            项目名称
+        </th>
+        <th lay-data="{field:'code'}">
+            编码
+        </th>
+        <th lay-data="{field:'link_man'}">
+            联系人
+        </th>
+        <th lay-data="{field:'link_man_tel'}">
+            联系人电话
+        </th>
+        <th lay-data="{field:'address'}">
+            项目地址
+        </th>
+        <th lay-data="{field:'region'}">
+            项目所在区域
+        </th>
+        <th lay-data="{field:'money'}">
+            项目金额
+        </th>
+        <th lay-data="{field:'construction'}">
+            施工队
+        </th>
+        <th lay-data="{field:'status'}">
+            项目状态
+        </th>
+    </tr>
+    </thead>
+
+
+    <tbody>
+        @for(item in page.list){
+        <tr role="row">
+            <td class="center">
+                <input type="hidden" value="${item.id}"/>
+                ${itemLP.index}
+            </td>
+            <td class="center">
+                ${item.name!}
+            </td>
+            <td class="center">
+                ${item.code!}
+            </td>
+            <td class="center">
+                ${item.linkMan!}
+            </td>
+            <td class="center">
+                ${item.linkManTel!}
+            </td>
+            <td class="center">
+                ${item.address!}
+            </td>
+            <td class="center">
+                ${item.region!}
+            </td>
+            <td class="center">
+                ${item.money!}
+            </td>
+            <td class="center">
+                ${item.construction!}
+            </td>
+            <td class="center">
+                ${item.status!}
+            </td>
+        </tr>
+        @}
+    </tbody>
+</table>
+<div class="pagination" id="Pagination" >
+
+</div>
+<script>
+    layui.use(['laypage','table'], function(){
+        var table = layui.table;
+        var laypage = layui.laypage;
+
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'Pagination' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count: ${page.pages} //数据总数，从服务端得到
+            ,curr: ${page.pageNum}
+            ,jump: function(obj, first){
+                //obj包含了当前分页的所有参数，比如：
+                //首次不执行
+                if(!first){
+                    getContent(obj.curr);
+                }
+            }
+        });
+        table.init('parse-table-demo', { //转化静态表格
+        });
+    });
+</script>

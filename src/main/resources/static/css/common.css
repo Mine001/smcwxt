@@ -1,0 +1,38 @@
+.detail-table{
+    color: #0f74a8;
+}
+.selected{
+    background: #b2dfed;
+}
+.container{
+    margin-top: 5px;
+}
+/*  搜索样式start*/
+.search-between-date{
+    width: 130px;
+    display: initial;
+}
+/*  搜索样式end*/
+/*查看页面样式start*/
+.detail-table{
+    margin: 10px 1%;
+    width: 98%;
+}
+
+.detail-table tr{
+    height: 45px;
+    line-height: 45px;
+    border:1px solid #e6e6e6;
+}
+.detail-table .title{
+    width: 15%;
+    text-align: right;
+    background-color: #a5a4a4;
+    padding-right: 10px;
+    color: #eef1f1;
+}
+.detail-table .cell{
+    padding-left: 10px;
+    width: 35%;
+}
+/*查看页面样式end*/

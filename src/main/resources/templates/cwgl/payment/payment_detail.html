@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="detail-table">
+    <tr>
+
+        <th class="title " style="width: 15%;">供应商:</th>
+        <td class="cell">
+            ${data.supplierName!}
+        </td>
+
+        <th class="title " style="width: 15%;">付款时间:</th>
+        <td class="cell">
+            ${strutil.formatDate(data.payTime,'yyyy-MM-dd HH:mm:ss')}
+        </td>
+    </tr>
+    <tr>
+        <th class="title " style="width: 15%;">签收单:</th>
+        <td class="cell" colspan="3">
+            <table class="layui-table" id="receipForms">
+                <tr>
+                    <td>项目</td>
+                    <td>签收日期</td>
+                    <td>签收内容</td>
+                    <td>总金额</td>
+                </tr>
+                @var totalMoney=0;
+                @if(has(receiptFormList)){
+                @for(item in receiptFormList){
+                @totalMoney=totalMoney+item.money-item.hasPay;
+                <tr id="receipForm_${item.id}">
+                    <td>${item.projectName}
+                        <input type="hidden" name="receiptFormIds" value="${item.id}">
+                    </td>
+                    <td>${item.receiptTime!,dateFormat="yyyy-MM-dd"}</td>
+                    <td>${item.receiptContent}</td>
+                    <td class="pay_money">${item.money-item.hasPay}</td>
+                </tr>
+                @}
+                @}
+                <tr id="totalMoney">
+                    <td>合计</td>
+                    <td colspan="4" id="totalMoneyText">${totalMoney!0}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title " style="width: 15%;">付款金额:</th>
+        <td class="cell">
+            ${data.payMoney!}
+        </td>
+        <th class="title " style="width: 15%;">付款内容:</th>
+        <td class="cell">
+            ${data.payContent!}
+        </td>
+    </tr>
+    <tr>
+        <th class="title " style="width: 15%;">付款类型:</th>
+        <td class="cell">
+            ${data.payTypeName!}
+        </td>
+        <th class="title " style="width: 15%;">收款方:</th>
+        <td class="cell">
+            ${data.receiver!}
+        </td>
+    </tr>
+    <tr>
+        <th class="title " style="width: 15%;">状态：</th>
+        <td class="cell">
+            @if(data.status==1){
+            已审核
+            @}else{
+            待审核
+            @}
+        </td>
+        <th class="title " style="width: 15%;">发票:</th>
+        <td class="cell">
+            ${data.invoiceId!}
+        </td>
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="detail-table">
+    <tr>
+        <th class="title">项目ID:</th>
+        <td class="cell">
+            ${projectName!}
+        </td>
+        <th class="title">供应商:</th>
+        <td class="cell">
+            ${supplierName!}
+        </td>
+
+    </tr>
+    <tr>
+
+        <th class="title">总金额:</th>
+        <td class="cell">
+            ${data.money!}
+        </td>
+        <th class="title">签收日期:</th>
+        <td class="cell">
+            ${strutil.formatDate(data.receiptTime,'yyyy-MM-dd HH:mm:ss')}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title">签收内容:</th>
+        <td class="cell" colspan="3">
+            ${data.receiptContent!}
+        </td>
+
+    </tr>
+    <tr>
+        <th class="title">状态:</th>
+        <td class="cell"  colspan="3">
+           @if(data.status=="1"){
+            已付款
+            @}else{
+            待付款
+            @}
+        </td>
+
+
+    </tr>
+    <tr>
+
+        <th class="title">备注:</th>
+        <td class="cell" colspan="3">
+            ${data.remark!}
+        </td>
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

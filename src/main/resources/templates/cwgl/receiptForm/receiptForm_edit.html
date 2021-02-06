@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script>
+        function selectProject(){
+            top.openDialog("选择项目","/cwgl/project/listForSelect",1000,800);
+        }
+        function selectSupplier(){
+            top.openDialog("选择供应商","/cwgl/supplier/listForSelect",1000,800);
+        }
+        function selectedProject(data){
+            $("#projectId").val(data.id);
+            $("#projectName").val(data.name);
+        }
+
+        function selectedSupplier(data){
+            $("#supplierId").val(data.id);
+            $("#supplierName").val(data.name);
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/cwgl/receiptForm/save" id="editForm" onsubmit="return false;" method="post">
+        <input class="layui-input"
+               name="id" type="hidden" id="id" placeholder="请输入主键"
+               value="${data.id!}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="projectId"><font style='color:red;'>*</font>所属项目:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="projectId" type="hidden" id="projectId" placeholder="请输入项目ID"
+                       value="${data.projectId!}" />
+                <input class="layui-input"  readonly onclick="selectProject()"  required lay-verify="required"
+                       name="projectName" type="text" id="projectName" placeholder="请选择项目"
+                       value="${projectName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="supplierId"><font style='color:red;'>*</font>供应商:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="supplierId" type="hidden" id="supplierId" placeholder="请输入供应商ID"
+                       value="${data.supplierId!}" />
+                <input class="layui-input"  readonly onclick="selectSupplier()"  required lay-verify="required"
+                       name="supplierName" type="text" id="supplierName" placeholder="请选择供应商"
+                       value="${supplierName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiptTime">签收日期:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input date-picker" name="receiptTime" type="text" id="receiptTime" placeholder="请输入签收日期"
+                       value="${data.receiptTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiptContent">签收内容:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   class="layui-textarea"
+                            name="receiptContent"  id="receiptContent" rows="5" cols="30">${data.receiptContent!}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="money">总金额:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"   lay-verify="number"
+                       name="money" type="text" id="money" placeholder="请输入总金额"
+                       value="${data.money!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="status">状态:</label>
+
+            <div class="layui-input-block">
+                <input type="hidden"  name="status" id="status" value="${data.status!0}"/>
+                @if(has(data) && data.status=="1"){
+                <input type="checkbox"  lay-filter="switchStatus" value="1" lay-skin="switch" lay-text="已付款|待付款" checked>
+                @}else{
+                <input type="checkbox"  lay-filter="switchStatus" value="1" lay-skin="switch" lay-text="已付款|待付款" >
+                @}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="remark">备注:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   class="layui-textarea"
+                            name="remark"  id="remark" rows="5" cols="30">${data.remark!}</textarea>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.use(['form'], function(){
+        var form = layui.form;
+        form.on('switch(switchStatus)', function (data) {
+            if( data.elem.checked){
+                $("#status").val(1);
+            }else{
+                $("#status").val(0);
+            }
+        });
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

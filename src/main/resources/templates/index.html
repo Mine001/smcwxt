@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>登录</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <script src="${ctx}ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="${ctx}ace/assets/js/jquery.form.js"></script>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+
+<div class="aui-flexView clearfix">
+    <div class="aui-login-bg">
+        <img src="https://www.17sucai.com/preview/10221/2020-09-12/login/images/body-bg.png" alt="">
+    </div>
+    <div class="aui-login-box">
+        <h2 class="aui-login-title">财务管理系统</h2>
+        <form action="${ctx}login" class="aui-login-form" id="loginForm"  method="post" >
+            <p>
+                <i class="icon icon-user"></i>
+                <input type="text"  name="account"  id="account" placeholder="请输入账号" value="admin" />
+            </p>
+            <p>
+                <i class="icon icon-pass"></i>
+                <input type="password"  name="password" id="password" placeholder="请输入密码" value="123456"/>
+            </p>
+            <p style="width:70%">
+                <i class="icon icon-code"></i>
+                <input type="text" placeholder="图形验证码">
+            </p>
+            <a href="javascript:;" class="aui-code">
+                <!-- 验证码 -->
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAAAoCAIAAACO8WhuAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTM5ODM1NzQ3NkY5MTFFOTgyNDk4NkMyODlBMDc3RDMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTM5ODM1NzU3NkY5MTFFOTgyNDk4NkMyODlBMDc3RDMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxOEQzMzU4Nzc2RTAxMUU5ODI0OTg2QzI4OUEwNzdEMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxOEQzMzU4ODc2RTAxMUU5ODI0OTg2QzI4OUEwNzdEMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PijDuR4AAAHpSURBVHja7Jlxa4JQFMXXFIwEg8DASAgmLOj7f4waDRwJjSRHbyQMCowEhZ0SRKwcuDlJzqU/ntAV3s9zzn1Za71eP7Bu1yMREBABERABERABERABsQiIgAiIgAiofEVRtN/tGgUoCIIPz/O323LtQohs7yEIbNv+Z0BydWjebBvPHGvTNMvRcVcrrdvV+/0aZVsVIFmWnyxL0zTHccrxFZsN0IRhWK+vqwKknKsgTT6F2O33siSBQq/Xy33hfbk0BoM4ii4BoRe2DQ4H3N8wDFVVGxjSruuerDccwkHOYpGjgP1LsozNX+2FJAEFvcAHF1ctsXoAjUajoWmCTiKBbBKfzCWEZVm3etEC0aH3eTyGiODEu7TYjwUoePhwWU4CMBfYFdgz60escYemAUKIvMxmHVXtahqcktgtnVxQkPR1KlyGx2Mcxxjtk8mkaSFdpB3fh0Cu7hmKUDud9HLr+zj7AGKOL0Zk6sfs95uTQdG5sIBSsMns7EO4pJ+2oiCtsbgM+IQO2i8n4H0oCL8J0lMv1p7nYZ+JanRdR7K+zudKu43LEnN6Np2iF7dFlufw/Xm16vpnFduDOsqdYpDriCekWOq1Bk6x3zz54lMoX3fwdQcBERABERCLgAiIgAiIgAjo3utbgAEAEV7rTJehb0cAAAAASUVORK5CYII=" alt="">
+            </a>
+            <button type="button" class="aui-button-go" onclick="login()">登录</button>
+        </form>
+    </div>
+
+</div>
+<script>
+    layui.use(['layer'],function(){
+        var layer = layui.layer;  //layer初始化
+         login=function() {
+            if($("#account").val()==""){
+                layer.msg("请输入账号");
+                return;
+            }
+            if($("#password").val()==""){
+                layer.msg("请输入密码");
+                return;
+            }
+            $("#loginForm").ajaxSubmit(function (data) {
+                if (!data.success) {
+                    layer.msg(data.message);
+                }else{
+                    window.location.href="system/dashboard";
+                }
+            });
+        };
+    });
+
+</script>
+</body>
+<style>
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    ::-moz-placeholder {
+        color: #aaa;
+    }
+
+    ::-webkit-input-placeholder {
+        color: #aaa;
+    }
+
+    :-ms-input-placeholder {
+        color: #aaa;
+    }
+
+    ::selection {
+        background: #111;
+        color: #fff;
+        font-weight: bold
+    }
+
+    html {
+        color: #333;
+    }
+
+    body {
+        min-width: 1200px;
+    }
+
+    html,body {
+        margin: 0;
+        height: 100%;
+        font-family: "Myriad Set Pro","Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;
+    }
+
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    a {
+        text-decoration: none;
+        color: #000;
+    }
+
+    hr {
+        height: 1px;
+        background: #ccc;
+        width: 100%;
+        border: none;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    img {
+        width:100%;
+        height:auto;
+        display:block;
+        border: 0;
+    }
+
+    body {
+        background: -webkit-linear-gradient(#163cc8, #395cdd); /* Safari 5.1 - 6.0 */
+        background: -o-linear-gradient(#163cc8, #395cdd); /* Opera 11.1 - 12.0 */
+        background: -moz-linear-gradient(#163cc8, #395cdd); /* Firefox 3.6 - 15 */
+        background: linear-gradient(#163cc8, #395cdd); /* 鏍囧噯鐨勮娉� */
+        background-color: #1c41cb;
+        color: #666;
+        font: 12px/150% Arial,Verdana, "microsoft yahei";
+    }
+
+    html, body, div, dl, dt, dd, ol, ul, li, h1, h2, h3, h4, h5, h6, p, blockquote, pre, button, fieldset, form, input, legend, textarea, th, td {
+        margin: 0;
+        padding: 0;
+    }
+
+    article,aside,details,figcaption,figure,footer,header,main,menu,nav,section,summary {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+
+    audio,canvas,progress,video {
+        display: inline-block;
+        vertical-align: baseline;
+    }
+
+    a {
+        text-decoration: none;
+        color: #08acee;
+    }
+
+    a:active,a:hover {
+        outline: 0;
+    }
+
+    button {
+        outline: 0;
+    }
+
+    mark {
+        color: #000;
+        background: #ff0;
+    }
+
+    small {
+        font-size: 80%;
+    }
+
+    img {
+        border: 0;
+    }
+
+    button,input,optgroup,select,textarea {
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        outline: none;
+        background: none;
+        border: none;
+    }
+
+    li {
+        list-style: none;
+    }
+
+    i {
+        font-style: normal;
+    }
+
+    a {
+        color: #666;
+    }
+
+    a:hover {
+        color: #eee;
+    }
+
+    em {
+        font-style: normal;
+    }
+
+    h2, h3 {
+        font-family: "microsoft yahei";
+        font-weight: 100;
+    }
+
+    table tr:nth-child(odd) {
+        background: #F4F4F4;
+    }
+
+    table td:nth-child(even) {
+        color: #F36140;
+    }
+
+    table tr:nth-child(2) {
+        background: #fff;
+        color: #888;
+    }
+
+    table.aui-tab-data tr {
+        background: #fff;
+    }
+
+    table.aui-tab-data tr:nth-child(odd) {
+        background-color: #F5F5F5;
+    }
+
+    table.aui-tab-data tr th {
+        padding: 10px;
+    }
+
+    table.aui-tab-data tr td {
+        padding: 10px;
+    }
+
+    .clearfix::after {
+        clear: both;
+        content: ".";
+        display: block;
+        height: 0;
+        visibility: hidden;
+    }
+
+    .clearfix {
+    }
+
+    .aui-flexView {
+        width: 80%;
+        margin: 0 auto;
+        position: relative;
+        height: 100%;
+    }
+
+    .aui-login-bg {
+        width: 480px;
+        height: 480px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        margin-top: -240px;
+    }
+
+    .aui-login-bg img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border: none;
+    }
+
+    .aui-login-box {
+        background-color: rgba(255,255,255,0.99);
+        width: 400px ;
+        height: 360px;
+        float: right;
+        padding: 20px;
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        margin-top: -180px;
+        border-radius: 5px;
+    }
+
+    .aui-login-title {
+        width: 150px;
+        height: 25px;
+        background-size: cover;
+        margin-bottom: 20px;
+    }
+
+    .aui-login-form{
+        position:relative;
+    }
+
+    .aui-login-form p {
+        border: 1px solid #ededed;
+        margin: 15px 0;
+        position: relative;
+        padding-left: 30px;
+        height: 40px;
+        width: 100%;
+    }
+
+    .aui-login-form p input {
+        width: 100%;
+        height: 38px;
+        line-height: 38px;
+        padding: 5px 0;
+        font-size: 14px;
+    }
+
+    .aui-forget {
+        color: #b9b9b9;
+        font-size: 12px;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .aui-forget:hover {
+        color: #fc2d2d;
+    }
+
+    .aui-button-go {
+        background: #325cdc;
+        font-size: 14px;
+        width: 100%;
+        border: none;
+        color: #fff;
+        height: 42px;
+        line-height: 42px;
+        cursor: pointer;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        display: block;
+        border: none;
+        background-size: 20px;
+        background-repeat: no-repeat;
+        position: absolute;
+        left: 5px;
+        top: 9px;
+    }
+
+    .icon-user {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAADs0lEQVRoQ+2aUVIbMQxArTX/0BM0nKAs0X4XTlA4QeEEpScATlA4QcMJSk/Q8L0KCydoeoLCf7zuKN2dyaQksXZlJpT1DMNHbK2eJVuybDCvrMEr4zUd8P9u8c7CnYUVZ6Aoih3v/WZZljssNkmSOwB4TNP0TvEzS0VFd+miKLYmk8kpABwYY3oLtBkDwCBJkss0TR9iwkcFHo1Gp977E2PMViDEAwBc9Pv988D+4m5RgNmqzrkvxpgjsUZ/BwystZ9jWDsKMBF9M8awC7dp14h42EbAU2PVgYnowhjzSUnRS0TkJaHWVIGLoug5536qaWeMsdZup2k61pKpCkxEP4wxe1rKVXKGiLivJVMNuNqofmspNivHWvtGawNTAx6NRkfe+68xgAHguN/vDzRkqwHneX4GAKcaSs3L8N6fZ1l2piFbDZiIro0xHzSUekLGd0RsG+amYtWA8zwfAsD7GMDe+5ssy1Q2QzVg5fg7P29q8VgN+NWt4TzP9wCA47B6897vZ1k21BCsZmFWhoj4aLepodiMjEdEDD1trfy0KnAMt9YMSaq7NAursi2uXrxdOdVhHX4h4qKiQZiEuV6qFq6gd5xzvN7auvajtXZPu/yjDszQGmmmZjo5a+QowC0tHcWyNbQKMBF95HKO9366m25sbByzK1ZrmgsC/HtIu7LWnvDJiCuck8lkehgBAN79B4h4FSJkWZ9WwFXs5XLOfNhgBY8RkfNr3sx6ZVke8B8AcN93lVL3xhiuWA6TJLmuD/pExHkzw/4j13t/2CYmNwYOXKfDKqwEJQ3VBPKJa2ne3GZ9NwKWZlXeew5VQ2vt1OK7u7s3/P/29nZ62HDOsUU5U5sW6ENa0+yrETARcd1KNT6GQM71GSPitnScGDjQlaV6NOrfxLXFwGti3XqCxFYWAXOocM4VjcwRaZC1NpVkYyLgGIeDtvMgPVxIgaOVcZqCS8s/ImAi8k0VizkOEYM5gjvGuEbRmgTJdUwwsDTZ0IIJkSNJQoKBq/yW8+Z1bId13r5KuWDgddyhazjJTt0BL3KJzsKrFssz/t659JLJlqzhaDcLbZ0hSliq6lP81qJt+bUt3/x40c1EsIX5K0TEt/ChBTltsEXyrhAx+D2YCHgNrcwl3Z7k/YcImKe4OhNr3Cy09YBG9Wsx8Aw0u3ddbm2rvHT8vbX2SHLwrz/QCLgezNbmp8BlWT5LQS9JkjE/OW4CqgIsNcs69G9l4XUAkOrQAUtn7KX17yz80iwm1fcPAJKsTCcBCvAAAAAASUVORK5CYII=');
+    }
+
+    .icon-pass {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MThEMzM1ODU3NkUwMTFFOTgyNDk4NkMyODlBMDc3RDMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MThEMzM1ODY3NkUwMTFFOTgyNDk4NkMyODlBMDc3RDMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoxOEQzMzU4Mzc2RTAxMUU5ODI0OTg2QzI4OUEwNzdEMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoxOEQzMzU4NDc2RTAxMUU5ODI0OTg2QzI4OUEwNzdEMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pr+zxWUAAASISURBVHja7JtbiE1RGMf33ucwjWvUINdc5oUkjtweEK8eJEUyoZCQJw8oHkR5UFLCC1HkMiTPCsmDUkPiwV0exNS4zJiZmHPO9vtYW8uec9tzzl5nn7G/+rfXWnvttb//+r71rcs+x3Zd1/qfxLH+M4kJx4RjwrUtySCVW1paAjWezWYtx/ndpxNs257NjLAczCA/EtjgM3hBnVuUPyL91nuG+r+fL0VSqVQ4hPsgQ8AKsB/lp+eps4x72yD4GhwkfxN8q0WXHguBM1juEpherDJ1pkL8PMmzYFwkXDqAjAcXwBJf+QfwETwDGSDuPRpM9CrQSau4TKID1nB9XQuEh4JDKKyT7SZ/BTInSb8kLS7rkh/OdTL5LaTXkx6mrJ0if4Tk5kq7dxguvRKFN2gWawfbSW4CD8FX4aRuC5nHYAd1NoM2zcVXc1kT9TE8CkW3+cr2gHMlPNsMdvnKtop7V42wbDSKYBbVFmnWvQhOyxQjyCfefdAsgU6fccDcqhGW+bEABoA5WvUO8teAm0gk/nZYPpE61O0Bl8l+0TpjHmV1hd5dLZceAKZq+VdMM48ymYyVTqf/WjKfSB2pyzMSwZ9qt6aA+qpEaVGoSFtjNFJdKN9RbIjkSHfSxndttTaKS10Ug5ZorK8FE/k6tIgr+p9ztahulnAymbS88Zhv+azHIoVeZL0glactu0Cbvca96GTEwvIy35i0fa7nKGv1IutvJ4dOeuFAfycU6fRwCMuY871Y3K5Ty3dBLutZMxdZf+cpiEW7tNudupXFouWcw5W9tBRllQKyfDxBtL0NuU7Qyr0vpSrnjWkIdxAcjxGsmsEgCMouqr1YlDe6llaKpCF3D8XveYr1xRI808PltucVlSIayuZBFNTdvK+uV4k2Kk14BIosBdNAQh9jlVCwQBu2ihXvwF3QGjph3KseHCfZVOoRTCVFdYZsLW+CjUG3j4GitBAEcgzTVOWzOLH0SnQ5GrTTgxIeRg/PtyIi6DIXnRrCnIcny3rZio7I6WdjmISdXMvFKooTeHkc8AVpdfhWjrwj2DyREaLOqBvLaCujdAqNsF2OhZmnj0FSjnveq0g7DqxlHO7zr7vD0idpyvcgdoPLYdCmFcuUcpSOmADpjabGgJG5E1wHbTnutUP2qmvoy3zSkHXl8sPjlGOt/ZMy10RANOnSE/1LR0Vcxu5Mypx+49JK1jFWp3kbDHVKKZDvSOtNzmOmVkUpxupOUK+WqIKBYJPcM6VH0qCFhaAcqsu3p25VJEdC8yu5342SS1uKaNZ3LNRlemlmUtLWv0eubtCVUq0Rtkss6zeEI7HbiAnHhMMLWpbpoGV0Hma+rfN1sv/zTP+yMIQXclkABinMoWxxv7UwS8jB4BQk71h/vlTIL30aoky47DMtyMpvuJr0bWIIc3tlXBoFM1aB77XVkKCdFogwW7pWXvA1QmS70aktNMLsdj4x7t5EhTC6fECn56FGafWTwMcRsO5Lx3EOhD4tqTPl3fTugyqNZznve4oee8H9wPrHf+OJCceEY8K1JL8EGAA9b9s7AX8MaAAAAABJRU5ErkJggg==');
+    }
+
+    .icon-code {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAADgElEQVRoQ+2aQVbbMBCGR5H35QblBsUvyrr0BIUTNDcATtD0BKQnKJyg5AawtvNMb1BuAPs40/fzlL5g7Ei2JcUGzw4iS/o0o9GMRoLemYh3xksD8FvXeHANZ1l2uFqtfmNhoyg6jeP4b8hFDgqcpukZEc2I6EBDPuJvpdTPUNBBgJMkOSaiSyHEURkYM98T0cVkMrn1De4VGKBCiO9EBGAbuWXmHz7BvQA3AC0uhjdwZ8BwRnmefyWicyI6tFGnRRs4tLmUcuHKuTUGzrLsYLVafdbmCtMt3Z8WUFZNsM9Ho9HNer2+j6LoLo5jOLzaYgReLpdTIvqInpl5sxcBt/G0tQd19AGA4exICLFxdg/j8fhqV/9G4CRJboUQ0GTnhZnvJpPJTgc5ABfVOGi4w4Y9mHSJcoY9POzh4Vjqrtfqu9N6EkKc63ByysyXpqXuM/CTlPI4juPn0BFiEw/0FfgVrAbOTAlKH4FLYZHAMPOvt2bSrWB1Nteb5KE1bJ+AncAGB4bDICIk4rj9sM2fncGGBn5QSv2/x0rTFLcO3wxOxilsUOCy48AA7Rw2KDAGk1LG24EC/lcB7QU2ODARPUopvxigvcHuAxhj7oI+KYaL+MA2qDAFHfsCroTGRX3xMt0lrDPgNE1viAgVhTpSquntDlzD6r4XSqmTXRM1XvEsl8tzm9SsZJBKaE+wuJC/GI/H81bAWZYd5Xme1VHvVttX0L5gq06K4ryNGtbHC4paz+WWBvLIzFPUg9br9RkzoyDuQ14EP1UDWAEnSTLTdV4fE3XSp64rGxfTChiVwjzPoeUPTmbnvhOc7zgFjBVFK2Bt1nAGeKPRObHVLiZuDdxhLVtrtxaw1jLOuOcnRx2SU6UUYgUrsdbwpreGgYjVZBo0ulZKoWBvLbWBtWkj0f9kPYqfhn90bG50VNvD1wbGxzoYAfS+vDb27VGThy6NgPcMXZpi2hpRY+A9QbeCre2ly1YxoHm3hnUCvKVpXNz5cmRwUNPibYqtGbd2WhWaRvgJ6Lq5s2neCw1byxtXddpqD5d1qvNnBPFtPTjKpTNTfmtareLvzoG1iePdJWLvptq+llLOmhw7pgXwArwZVL+TRmppW4lYMPO8d8+Hi6usn/1PhRCIxV84tk2JJoqiKx8aDWLSJrPCAqBNCMBOAJsWxOfvXvewz4k37fvdAf8DgZt9Wx0Y56cAAAAASUVORK5CYII=');
+    }
+
+    .aui-login-form span {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #c7c6c6;
+        font-size: 12px;
+    }
+
+    .aui-login-form span a {
+        color: #fc2d2d;
+        text-decoration: underline;
+    }
+
+    .aui-code{
+        width: 95px;
+        height: 40px;
+        background:#e2e2e2;
+        position:absolute;
+        right:0;
+        bottom:60px;
+        display:block;
+    }
+
+
+</style>
+</html>

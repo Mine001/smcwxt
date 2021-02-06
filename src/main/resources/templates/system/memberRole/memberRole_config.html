@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/ace/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/basic.css">
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/js/tableStyle.js"></script>
+    <script src="/js/bootstrap-treeview.js"></script>
+</head>
+<body>
+<div class="col-xs-12">
+    <div id="treeview6" class=""></div>
+</div>
+<div class="text-center">
+    <button class="btn btn-success" type="button" onclick="save()" >保存</button>
+    <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+</div>
+<script>
+    function save(){
+        var selectNodes=$('#treeview6').treeview('getChecked');
+        var permissionIds=[];
+        for(var i in selectNodes){
+            permissionIds.push(selectNodes[i].id);
+        }
+
+        $.ajax({
+            url:"/system/memberRole/saveConfig",
+            traditional: true,//传递数组
+            data:{
+                roleId:${roleId},
+                permissionIds:permissionIds
+            },dataType:"JSON",
+            success:function(data){
+                if(data.success){
+                    alert("保存成功");
+                    top.closeDialog(false);
+                }else{
+                    alert(data.message==null?"操作失败":data.message);
+                }
+            }
+        });
+
+    }
+    var nodeCheckedSilent = false;
+
+    function nodeChecked(event, node) {
+        if (nodeCheckedSilent) {
+            return;
+        }
+        nodeCheckedSilent = true;
+        checkAllParent(node);
+        checkAllSon(node);
+        nodeCheckedSilent = false;
+    }
+
+    var nodeUncheckedSilent = false;
+
+    function nodeUnchecked(event, node) {
+        if (nodeUncheckedSilent)
+            return;
+        nodeUncheckedSilent = true;
+        uncheckAllParent(node);
+        uncheckAllSon(node);
+        nodeUncheckedSilent = false;
+    }
+
+    //选中全部父节点
+    function checkAllParent(node) {
+        $('#treeview6').treeview('checkNode', node.nodeId, {
+            silent: true
+        });
+        var parentNode = $('#treeview6').treeview('getParent', node.nodeId);
+        if (!("nodeId" in parentNode)) {
+            return;
+        } else {
+            checkAllParent(parentNode);
+        }
+    }
+    //取消全部父节点
+    function uncheckAllParent(node) {
+        $('#treeview6').treeview('uncheckNode', node.nodeId, {
+            silent: true
+        });
+        var siblings = $('#treeview6').treeview('getSiblings', node.nodeId);
+        var parentNode = $('#treeview6').treeview('getParent', node.nodeId);
+        if (!("nodeId" in parentNode)) {
+            return;
+        }
+        var isAllUnchecked = true; //是否全部没选中
+        for (var i in siblings) {
+            if (siblings[i].state.checked) {
+                isAllUnchecked = false;
+                break;
+            }
+        }
+        if (isAllUnchecked) {
+            uncheckAllParent(parentNode);
+        }
+
+    }
+
+    //级联选中所有子节点
+    function checkAllSon(node) {
+        $('#treeview6').treeview('checkNode', node.nodeId, {
+            silent: true
+        });
+        if (node.nodes != null && node.nodes.length > 0) {
+            for (var i in node.nodes) {
+                checkAllSon(node.nodes[i]);
+            }
+        }
+    }
+    //级联取消所有子节点
+    function uncheckAllSon(node) {
+        $('#treeview6').treeview('uncheckNode', node.nodeId, {
+            silent: true
+        });
+        if (node.nodes != null && node.nodes.length > 0) {
+            for (var i in node.nodes) {
+                uncheckAllSon(node.nodes[i]);
+            }
+        }
+    }
+    $('#treeview6').treeview({
+        color: "#428bca",
+        showTags: false,
+        data: ${allPermission},
+        multiSelect: true,// 因为我们要通过check框来控制
+        showCheckbox: true,// 展示checkbox
+        onNodeChecked: nodeChecked,
+        onNodeUnchecked: nodeUnchecked
+    });
+
+</script>
+
+
+</body>
+</html>

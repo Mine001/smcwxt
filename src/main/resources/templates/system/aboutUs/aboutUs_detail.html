@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="layui-table detail-table">
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">公司名称:</th>
+        <td class="layui-col-md4">
+            ${data.companyName!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">公司介绍:</th>
+        <td class="layui-col-md4">
+            ${data.distribution!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">软件信息:</th>
+        <td class="layui-col-md4">
+            ${data.softMessage!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">注册协议:</th>
+        <td class="layui-col-md4">
+            ${data.registerAgreement!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">地址:</th>
+        <td class="layui-col-md4">
+            ${data.address!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">联系电话:</th>
+        <td class="layui-col-md4">
+            ${data.linkTel!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">联系人:</th>
+        <td class="layui-col-md4">
+            ${data.linkMan!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">邮箱:</th>
+        <td class="layui-col-md4">
+            ${data.email!}
+        </td>
+    </tr>
+    <tr>
+
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

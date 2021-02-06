@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/ace/assets/css/bootstrap.min.css" />
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/static/ace/assets/js/jquery.validate.min.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="form-horizontal" action="/system/memberRole/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden" name="id" value="${data.id!}"/>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="name">名称:</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="name" type="text" id="name" placeholder="请输入名称"
+                       value="${data.name!}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="description">描述信息:</label>
+            <div class="col-xs-10">
+                <!--判断是否为多行文本-->
+                <textarea   name="description"  class="form-control"  id="description" rows="5" cols="30">${data.description!}</textarea>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success" type="button" onclick="save()" >保存</button>
+            <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    function save(){
+        $('#editForm').submit();
+    }
+    $(document).ready(function(){
+        $('#editForm').validate({
+            errorElement : 'span',
+            errorClass : 'help-block',
+            focusInvalid : false,
+            rules : {
+                name:{required:true,maxlength:100},description:{maxlength:500}
+            },
+            messages : {
+                name:{required:"名称不能为空",maxlength:"名称的长度不能大于100"},description:{maxlength:"描述信息的长度不能大于500"}
+            },
+            highlight : function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success : function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement : function(error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler : function(form) {
+                CKupdate();
+                $(form).ajaxSubmit(function(data){
+                    if(data.success){
+                        alert( data.message?data.message:"操作成功");
+                        top.closeDialog(true);
+                    }else{
+                        alert( data.message?data.message:"操作失败");
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

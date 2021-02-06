@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/cwgl/receive/save" id="editForm" onsubmit="return false;" method="post">
+        <input class="layui-input"
+               name="id" type="hidden" id="id" placeholder="请输入主键"
+               value="${data.id!}" />
+        <input class="layui-input"
+               name="status" type="hidden" id="status"
+               value="${data.status!0}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="projectId"><font style='color:red;'>*</font>所属项目:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="projectId" type="hidden" id="projectId" placeholder="请输入项目ID"
+                       value="${data.projectId!}" />
+                <input class="layui-input"  readonly onclick="selectProject()"  required lay-verify="required"
+                       name="projectName" type="text" id="projectName" placeholder="请选择项目"
+                       value="${data.projectName!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiveTime">收款时间:</label>
+            <div class="layui-input-block">
+                <input class="layui-input date-picker"
+                       name="receiveTime" type="text" id="receiveTime" placeholder="请输入收款时间"
+                       value="${data.receiveTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiveMoney"><font style='color:red;'>*</font>收款金额:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input" required lay-verify="required|number"
+                       name="receiveMoney" type="text" id="receiveMoney" placeholder="请输入收款金额"
+                       value="${data.receiveMoney!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiveType"><font style='color:red;'>*</font>收款类型:</label>
+
+            <div class="layui-input-block">
+                <input type="hidden" class="layui-input"  id="receiveType"  name="receiveType"  placeholder="请输入收款类型"  >
+                <input type="text" class="layui-input"  readonly="readonly" lay-filter="receiveTypeName"
+                       name="receiveTypeName" id="receiveTypeName" placeholder="请输入收款类型" value="${data.receiveTypeName!}" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="receiveContent">收款内容:</label>
+
+            <div class="layui-input-block">
+                <textarea class="layui-textarea"
+                       name="receiveContent" type="text" id="receiveContent" placeholder="请输入收款内容"
+                         >${data.receiveContent!}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="invoiceId">发票ID:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="invoiceId" type="text" id="invoiceId" placeholder="请输入发票ID"
+                       value="${data.invoiceId!}" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    function selectProject(){
+        top.openDialog("选择项目","/cwgl/project/listForSelect",1000,800);
+    }
+    function selectedProject(data){
+        $("#projectId").val(data.id);
+        $("#projectName").val(data.name);
+    }
+    layui.config({
+        base: '/layui/layui_exts/',
+    }).extend({
+        treeSelect:'treeSelect/treeSelect'
+    }).use(['treeSelect','form'], function(){
+        var form = layui.form;
+        var treeSelect=layui.treeSelect;
+        form.render(); //更新全部
+        treeSelect.render({
+            // 选择器
+            elem: '#receiveTypeName',
+            // 数据
+            data: '/system/dataDict/listForTreeSelect?pId=62',
+            // 异步加载方式：get/post，默认get
+            type: 'get',
+            // 占位符
+            placeholder: '请选择收款类型',
+            // 是否开启搜索功能：true/false，默认false
+            search: true,
+            // 点击回调
+            click: function(d){
+                $("#receiveType").val(d.current.id);
+                $("#receiveTypeName").val(d.current.name);
+            },
+            style: {
+                folder: {
+                    enable: true
+                },
+                line: {
+                    enable: true
+                }
+            },
+            // 加载完成后的回调函数
+            success: function (d) {
+                treeSelect.checkNode('receiveTypeName', ${data.receiveType!});
+            }
+        });
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

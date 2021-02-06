@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>项目选择</title>
+    <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/tableStyle.js"></script>
+
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script>
+        layui.use(['table','form'], function(){
+            var table = layui.table;
+            var form=layui.form;
+            var clos=[];
+            form.render(); //更新全部
+            //第一个实例
+            var tableIns=table.render({
+                    elem: '#projectPageContent'
+                    ,url: '/cwgl/project/list' //数据接口
+                    ,where:$("#projectPageForm").serializeJson()
+                    ,request:{
+                        pageName: 'pageNum', //页码的参数名称，默认：page
+                        limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                    }
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {title: '序号', width:80, templet: function (d) {
+                            return d.LAY_TABLE_INDEX+1
+                        }}
+                            ,{field: 'name', title: '项目名称'}
+                            ,{field: 'code', title: '编码'}
+                            ,{field: 'linkMan', title: '联系人'}
+                            ,{field: 'linkManTel', title: '联系人电话'}
+                            ,{field: 'address', title: '项目地址'}
+                            ,{field: 'region', title: '项目所在区域'}
+                            ,{field: 'money', title: '项目金额'}
+                            ,{field: 'construction', title: '施工队'}
+                            ,{field: 'status', title: '项目状态', templet: function (d) {
+                                if(d.status==1){
+                                    return "已竣工";
+                                }else{
+                                    return "未竣工";
+                                }
+                            }},{field: 'status', title: '操作',  toolbar: '#toolBars'}
+                    ]]
+        });
+
+        //监听行工具事件
+        table.on('tool(projectPageTable)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                ,layEvent = obj.event; //获得 lay-event 对应的值
+            if(layEvent === 'select'){
+                top.selectedProject(data,${isIndex!false});
+            }
+        });
+        //监听行单击事件
+        table.on('row(projectPageTable)', function(obj){
+            $(".selected").removeClass("selected");
+            $(obj.tr).addClass("selected");
+            selectId=obj.data.id;
+        });
+        init=function(){
+            getContent(1);
+        };
+        getContent=function(pageNum){
+            selectId=undefined;
+            tableIns.reload({
+                where:$("#projectPageForm").serializeJson()
+        });
+        };
+        rest=function(){
+            $("#SEARCH_AND_name_LIKE").val("");
+            $("#SEARCH_AND_status_EQ").val("");
+            form.render(); //更新全部
+            getContent(1);
+        }
+
+        });
+    </script>
+</head>
+<body>
+<div class="layui-row">
+    @include("../../include/action.html"){};
+    <form class="layui-form" action="/cwgl/project/list"  method="post"  id="projectPageForm"
+          onsubmit="return false;">
+        <input type="hidden" id="orderBy" name="orderBy" value=" id_desc"/>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">项目名称:</label>
+                <div class="layui-input-inline" >
+                    <input type="search" class="layui-input"  id="SEARCH_AND_name_LIKE"  name="SEARCH_AND_name_LIKE"  placeholder="请输入项目名称"  >
+                </div>
+                <label class="layui-form-label">项目状态:</label>
+                <div class="layui-input-inline" >
+                    <select  id="SEARCH_AND_status_EQ" class="searchSelect"  name="SEARCH_AND_status_EQ" >
+                        <option value=""></option>
+                        <option value="0">未竣工</option>
+                        <option value="1">已竣工</option>
+                    </select>
+                </div>
+                <!--            <label>名称:<input type="search" id="SEARCH_AND_name_LIKE" name="SEARCH_AND_name_LIKE"  placeholder=""  ></label>-->
+                <div class="layui-input-inline">
+                    <button class="layui-btn"  onclick="getContent()">搜索</button>
+                    <button  class="layui-btn layui-btn-primary" onclick="rest()">重置</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div id="projectPageContent" style="padding-top: 10px;" lay-filter="projectPageTable"></div>
+<script type="text/html" id="toolBars">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="select">选择</a>
+</script>
+</body>
+</html>

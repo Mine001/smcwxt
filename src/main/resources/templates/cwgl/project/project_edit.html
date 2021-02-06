@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script src="/js/datas/areaData.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/cwgl/project/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden"
+             name="id" value="${data.id!}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="name"><font style='color:red;'>*</font>项目名称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="name" type="text" id="name" placeholder="请输入项目名称"
+                       value="${data.name!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="code">编码:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="code" type="text" id="code" placeholder="请输入编码"
+                       value="${data.code!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="linkMan"><font style='color:red;'>*</font>联系人:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="linkMan" type="text" id="linkMan" placeholder="请输入联系人"
+                       value="${data.linkMan!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="linkManTel"><font style='color:red;'>*</font>联系人电话:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="linkManTel" type="text" id="linkManTel" placeholder="请输入联系人电话"
+                       value="${data.linkManTel!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="region_sel">所在区域:</label>
+            <div class="layui-input-block">
+                <div id="region_sel"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="address">项目地址:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="address" type="text" id="address" placeholder="请输入项目地址"
+                       value="${data.address!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="money"><font style='color:red;'>*</font>项目金额:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       required lay-verify="required"
+                       name="money" type="text" id="money" placeholder="请输入项目金额"
+                       value="${data.money!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="remark">备注:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   class="layui-textarea"
+                            name="remark"  id="remark" rows="5" cols="30">${data.remark!}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="construction">施工队:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="construction" type="text" id="construction" placeholder="请输入施工队"
+                       value="${data.construction!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" >项目状态:</label>
+
+            <div class="layui-input-block">
+                <input type="hidden"  name="status" id="status" value="${data.status!0}"/>
+                @if(has(data) && data.status=="1"){
+                <input type="checkbox"  lay-filter="switchStatus" value="1" lay-skin="switch" lay-text="竣工|未竣工" checked>
+                @}else{
+                <input type="checkbox"  lay-filter="switchStatus" value="1" lay-skin="switch" lay-text="竣工|未竣工">
+                @}
+
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.config({
+        base: '/layui/layui_exts/',
+    }).extend({
+        interact:'inte/inte'
+    }).use(['form','interact'], function(){
+        var form = layui.form;
+        var interact = layui.interact;
+        interact.render({
+            elem : '#region_sel',
+            title : '选择区域',
+            data : areaData,
+            selected: [${data.province!},${data.city!},${data.region!}], // 默认选中值，例如[1,4,11]
+            name: ['province','city','region'],
+            primary_key: 'id', // 主键字段
+            parent_key: 'pid', // 父级字段
+            title_key: 'title', // 标题字段
+            hint : ['请选择省份','请选择市','请选择区/县'],
+        });
+        form.on('switch(switchStatus)', function (data) {
+            if( data.elem.checked){
+                $("#status").val(1);
+            }else{
+                $("#status").val(0);
+            }
+        });
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

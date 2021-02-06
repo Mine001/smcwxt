@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+    <script src="/js/datas/areaData.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="layui-form" action="/cwgl/supplier/save" id="editForm" onsubmit="return false;" method="post">
+        <input class="layui-input"
+               name="id" type="hidden" id="id" placeholder="请输入id"
+               value="${data.id!}" />
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="name"><font style='color:red;'>*</font>供应商名称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"   required lay-verify="required"
+                       name="name" type="text" id="name" placeholder="请输入供应商名称"
+                       value="${data.name!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="shotrName">简称:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="shotrName" type="text" id="shotrName" placeholder="请输入简称"
+                       value="${data.shotrName!}" />
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="linkMan"><font style='color:red;'>*</font>联系人:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"   required lay-verify="required"
+                       name="linkMan" type="text" id="linkMan" placeholder="请输入联系人"
+                       value="${data.linkMan!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="linkTel"><font style='color:red;'>*</font>联系电话:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"   required lay-verify="required"
+                       name="linkTel" type="text" id="linkTel" placeholder="请输入联系电话"
+                       value="${data.linkTel!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="region_sel">区域:</label>
+
+            <div class="layui-input-block">
+                <div id="region_sel"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="address">地址:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="address" type="text" id="address" placeholder="请输入地址"
+                       value="${data.address!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="remark">备注:</label>
+
+            <div class="layui-input-block">
+                <!--判断是否为多行文本-->
+                <textarea   class="layui-textarea"
+                            name="remark"  id="remark" rows="5" cols="30">${data.remark!}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="legal">法人:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="legal" type="text" id="legal" placeholder="请输入法人"
+                       value="${data.legal!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="license">营业执照:</label>
+
+            <div class="layui-input-block">
+                <!--附件上传-->
+                <div  class="wu-example">
+                    <!--用来存放文件信息-->
+                    <input type="hidden"
+                           name="license" id="license" value="${data.license!}"/>
+                    <div class="uploader-list">
+                        <img id="license_prew"  style="max-width: 120px;max-height: 120px;" src="${data.license!}"></img>
+                    </div>
+                    <div class="btns">
+                        <div id="license_picker">选择图片</div>
+                    </div>
+                </div>
+                <script>
+                    var uploader = WebUploader.create({
+                        // swf文件路径
+                        swf: '/webuploader/Uploader.swf',
+                        // 文件接收服务端。
+                        server: '/upload',
+                        // 选择文件的按钮。可选。
+                        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                        pick: '#license_picker',
+                        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                        resize: false,
+                        // 选完文件后，是否自动上传。
+                        auto: true,
+                        multiple:false,
+                        // 只允许选择图片文件。
+                        accept: {
+                            title: '请选择营业执照',
+                            extensions: 'gif,jpg,jpeg,bmp,png',
+                            mimeTypes: 'image/*'
+                        }
+                    });
+                    uploader.on( 'uploadSuccess', function( file ,response) {
+                        if(response.success){
+                            var data=response.data;
+                            $("#license_prew").attr("src",data.fileUrl);
+                            $("#license").val(data.fileUrl);
+                        }else{
+                            alert( data.message?data.message:"上传失败");
+                        }
+                    });
+
+                    uploader.on( 'uploadError', function( file ) {
+                        $( '#'+file.id ).find('p.state').text('上传出错');
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="bankNo">银行账号:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="bankNo" type="text" id="bankNo" placeholder="请输入银行账号"
+                       value="${data.bankNo!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="openBank">开户行:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="openBank" type="text" id="openBank" placeholder="请输入开户行"
+                       value="${data.openBank!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="payType">付款方式:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="payType" type="text" id="payType" placeholder="请输入付款方式"
+                       value="${data.payType!}" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="email">邮箱:</label>
+
+            <div class="layui-input-block">
+                <input class="layui-input"
+                       name="email" type="text" id="email" placeholder="请输入邮箱"
+                       value="${data.email!}" />
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="layui-btn layui-btn-normal" lay-filter="formSubmit"  lay-submit >保存</button>
+            <button class="layui-btn layui-btn-primary"  onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    layui.config({
+        base: '/layui/layui_exts/',
+    }).extend({
+        interact:'inte/inte'
+    }).use(['form','interact'], function(){
+        var form = layui.form;
+        var interact = layui.interact;
+        interact.render({
+            elem : '#region_sel',
+            title : '选择区域',
+            data : areaData,
+            selected: [${data.province!},${data.city!},${data.region!}], // 默认选中值，例如[1,4,11]
+            name: ['province','city','region'],
+            primary_key: 'id', // 主键字段
+            parent_key: 'pid', // 父级字段
+            title_key: 'title', // 标题字段
+            hint : ['请选择省份','请选择市','请选择区/县'],
+        });
+
+        form.on('submit(formSubmit)', function(data) {
+            CKupdate();
+            $("#editForm").ajaxSubmit(function(data){
+                if(data.success){
+                    layer.msg( data.message?data.message:"操作成功");
+                    top.closeDialog(true);
+                }else{
+                    layer.msg( data.message?data.message:"操作失败");
+                }
+            });
+
+        });
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>
+</body>
+</html>

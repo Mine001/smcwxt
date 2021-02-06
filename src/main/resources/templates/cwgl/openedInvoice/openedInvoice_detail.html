@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="layui-table detail-table">
+    <tr>
+        <th class="layui-bg-gray " style="width: 15%;">主键:</th>
+        <td class="layui-col-md4">
+            ${data.id!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">项目ID:</th>
+        <td class="layui-col-md4">
+            ${data.projectId!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">金额:</th>
+        <td class="layui-col-md4">
+            ${data.money!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">备注:</th>
+        <td class="layui-col-md4">
+            ${data.remark!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">纳税人名称:</th>
+        <td class="layui-col-md4">
+            ${data.taxpayer!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">纳税人识别号:</th>
+        <td class="layui-col-md4">
+            ${data.taxNo!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">地址:</th>
+        <td class="layui-col-md4">
+            ${data.address!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">开户行:</th>
+        <td class="layui-col-md4">
+            ${data.openBank!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">服务名称:</th>
+        <td class="layui-col-md4">
+            ${data.serverName!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">规格型号:</th>
+        <td class="layui-col-md4">
+            ${data.specs!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">单位:</th>
+        <td class="layui-col-md4">
+            ${data.unit!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">数量:</th>
+        <td class="layui-col-md4">
+            ${data.count!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">发票代码:</th>
+        <td class="layui-col-md4">
+            ${data.invoiceCode!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">发票号码:</th>
+        <td class="layui-col-md4">
+            ${data.invoiceNo!}
+        </td>
+    </tr>
+    <tr>
+
+
+
+
+
+
+        <th class="layui-bg-gray " style="width: 15%;">开票日期:</th>
+        <td class="layui-col-md4">
+            ${strutil.formatDate(data.openTime,'yyyy-MM-dd HH:mm:ss')}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">状态 0：未收款 1：已收款:</th>
+        <td class="layui-col-md4">
+            ${data.staus!}
+        </td>
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

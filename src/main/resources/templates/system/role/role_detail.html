@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="layui-table detail-table">
+    <tr>
+
+        <th class="layui-bg-gray " style="width: 15%;">角色名称:</th>
+        <td class="layui-col-md4">
+            ${data.roleName!}
+        </td>
+
+        <th class="layui-bg-gray " style="width: 15%;">备注:</th>
+        <td class="layui-col-md4">
+            ${data.remark!}
+        </td>
+    </tr>
+    <tr>
+
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>

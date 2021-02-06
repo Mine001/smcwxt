@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/ace/assets/css/bootstrap.min.css" />
+    <script src="/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/static/ace/assets/js/jquery.validate.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="form-horizontal" action="/system/org/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden" name="id" value="${data.id!}"/>
+        <input type="hidden" name="parentId" value="${data.parentId!0}"/>
+        <div class="form-group">
+            <label class="layui-form-label">账号:</label>
+            <div class="layui-input-inline" >
+                <input type="search" class="layui-input" id="SEARCH_AND_account_LIKE"
+                       name="SEARCH_AND_account_LIKE"  placeholder=""  >
+            </div>
+            <label class="col-xs-2 control-label" for="orgName">机构名称</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="orgName" type="text" id="orgName" placeholder="请输入机构名称"
+                       value="${data.orgName!}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="orgCode">机构编码</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="orgCode" type="text" id="orgCode" placeholder="请输入机构编码"
+                       value="${data.orgCode!}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="seq">排序</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="seq" type="text" id="seq" placeholder="请输入排序"
+                       value="${data.seq!0}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="remark">备注</label>
+            <div class="col-xs-10">
+                <textarea id="remark" class="form-control" name="remark" cols="50"  placeholder="请输入备注" rows="5">${data.remark!}</textarea>
+            </div>
+        </div>
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success" type="button" onclick="save()" >保存</button>
+            <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function save(){
+        $('#editForm').submit();
+    }
+    $(document).ready(function(){
+        $('#editForm').validate({
+            errorElement : 'span',
+            errorClass : 'help-block',
+            focusInvalid : false,
+            rules : {
+                orgName : {
+                    required : true,
+                    maxlength: 20
+                },
+                orgCode : {
+                    required : true,
+                    maxlength: 20
+                },
+                seq : {
+                    digits : true
+                },
+                remark: {
+                    maxlength : 500
+                }
+            },
+            messages : {
+                orgName : {
+                    required : "请输入机构名称",
+                    maxlength: "机构名称的长度不能大于20"
+                },
+                orgCode : {
+                    required : "请输入机构编码",
+                    maxlength: "机构编码长度不能岛屿20"
+                },
+                seq : {
+                    digits : "排序必须是数字类型"
+                },
+                remark: {
+                    maxlength : "备注长度不能大于500个字"
+                }
+            },
+            highlight : function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success : function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement : function(error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler : function(form) {
+                $(form).ajaxSubmit(function(data){
+                    if(data.success){
+                        alert( data.message?data.message:"操作成功");
+                        top.closeDialog(true);
+                    }else{
+                        alert( data.message?data.message:"操作失败");
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

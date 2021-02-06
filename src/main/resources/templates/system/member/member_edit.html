@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/ace/assets/css/bootstrap.min.css" />
+    <script src="/static/ace/assets/js/jquery-2.1.4.min.js"></script>
+    <script src="/static/ace/assets/js/jquery.form.js"></script>
+    <script src="/static/ace/assets/js/jquery.validate.min.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+    <!--引入CSS-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+</head>
+<body>
+<div class="container">
+    <form class="form-horizontal" action="/system/member/save" id="editForm" onsubmit="return false;" method="post">
+        <input type="hidden" name="id" value="${data.id!}"/>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="account">账号:</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="account" type="text" id="account" placeholder="请输入账号"
+                       value="${data.account!}" />
+            </div>
+        </div>
+        <input type="hidden" name="password" value="${data.password!}"/>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="email">邮箱:</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="email" type="text" id="email" placeholder="请输入邮箱"
+                       value="${data.email!}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="birthday">生日:</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="birthday" type="text" id="birthday" placeholder="请输入生日"
+                       value="${data.birthday!,dateFormat='yyyy-MM-dd'}" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
+            </div>
+        </div>
+        <input type="hidden" name="openId" value="${data.openId!}"/>
+        <div class="form-group">
+            <label class="col-xs-2 control-label" for="userName">用户昵称:</label>
+            <div class="col-xs-10">
+                <input class="form-control" name="userName" type="text" id="userName" placeholder="请输入用户昵称"
+                       value="${data.userName!}" />
+            </div>
+        </div>
+        <input type="hidden" name="salt" value="${data.salt!}"/>
+        <div class="col-sm-12 text-center">
+            <button class="btn btn-success" type="button" onclick="save()" >保存</button>
+            <button class="btn btn-danger" type="button" onclick="top.closeDialog(false)">关闭</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function CKupdate() {
+        for (instance in CKEDITOR.instances)
+            CKEDITOR.instances[instance].updateElement();
+    }
+    function save(){
+        $('#editForm').submit();
+    }
+    $(document).ready(function(){
+        $('#editForm').validate({
+            errorElement : 'span',
+            errorClass : 'help-block',
+            focusInvalid : false,
+            rules : {
+                account:{required:true,maxlength:30},email:{maxlength:50},birthday:{},userName:{maxlength:50}
+            },
+            messages : {
+                account:{required:"账号不能为空",maxlength:"账号的长度不能大于30"},email:{maxlength:"邮箱的长度不能大于50"},birthday:{},userName:{maxlength:"用户昵称的长度不能大于50"}
+            },
+            highlight : function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success : function(label) {
+                label.closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+            errorPlacement : function(error, element) {
+                element.parent('div').append(error);
+            },
+            submitHandler : function(form) {
+                CKupdate();
+                $(form).ajaxSubmit(function(data){
+                    if(data.success){
+                        alert( data.message?data.message:"操作成功");
+                        top.closeDialog(true);
+                    }else{
+                        alert( data.message?data.message:"操作失败");
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

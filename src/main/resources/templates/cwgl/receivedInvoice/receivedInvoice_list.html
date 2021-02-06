@@ -1,0 +1,76 @@
+<table  class="layui-table">
+    <thead>
+    <tr role="row">
+        <th lay-data="{field:'index', width:80}">
+            序号
+        </th>
+        <th lay-data="{field:'id'}">
+            主键
+        </th>
+        <th lay-data="{field:'supplier_id'}">
+            供应商ID
+        </th>
+        <th lay-data="{field:'money'}">
+            金额
+        </th>
+        <th lay-data="{field:'received_time'}">
+            收票日期
+        </th>
+        <th lay-data="{field:'staus'}">
+            状态 0：未付款 1：已付款
+        </th>
+    </tr>
+    </thead>
+
+
+    <tbody>
+        @for(item in page.list){
+        <tr role="row">
+            <td class="center">
+                <input type="hidden" value="${item.id}"/>
+                ${itemLP.index}
+            </td>
+            <td class="center">
+                ${item.id!}
+            </td>
+            <td class="center">
+                ${item.supplierId!}
+            </td>
+            <td class="center">
+                ${item.money!}
+            </td>
+            <td class="center">
+                ${item.receivedTime!,dateFormat='yyyy-MM-dd HH:mm:ss'}
+            </td>
+            <td class="center">
+                ${item.staus!}
+            </td>
+        </tr>
+        @}
+    </tbody>
+</table>
+<div class="pagination" id="Pagination" >
+
+</div>
+<script>
+    layui.use(['laypage','table'], function(){
+        var table = layui.table;
+        var laypage = layui.laypage;
+
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'Pagination' //注意，这里的 test1 是 ID，不用加 # 号
+            ,count: ${page.pages} //数据总数，从服务端得到
+            ,curr: ${page.pageNum}
+            ,jump: function(obj, first){
+                //obj包含了当前分页的所有参数，比如：
+                //首次不执行
+                if(!first){
+                    getContent(obj.curr);
+                }
+            }
+        });
+        table.init('parse-table-demo', { //转化静态表格
+        });
+    });
+</script>

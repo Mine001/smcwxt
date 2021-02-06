@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>项目支出明细</title>
+    <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <script src="/static/js/jquery.form.js"></script>
+    <script src="/static/js/tableStyle.js"></script>
+    <script src="/My97DatePicker/WdatePicker.js"></script>
+    <script>
+        layui.use(['table','form','treeSelect'], function(){
+            var table = layui.table;
+            var form=layui.form;
+            var treeSelect= layui.treeSelect;
+            form.render(); //更新全部
+
+            treeSelect.render({
+                // 选择器
+                elem: '#payTypeName',
+                // 数据
+                data: '/system/dataDict/listForTreeSelect?pId=63',
+                // 异步加载方式：get/post，默认get
+                type: 'get',
+                // 占位符
+                placeholder: '请选择付款类型',
+                // 是否开启搜索功能：true/false，默认false
+                search: true,
+                // 点击回调
+                click: function(d){
+                    $("#SEARCH_AND_payType_EQ").val(d.current.id);
+                },
+                style: {
+                    folder: {
+                        enable: true
+                    },
+                    line: {
+                        enable: true
+                    }
+                },
+                // 加载完成后的回调函数
+                success: function (d) {
+//
+                }
+            });
+            //第一个实例
+            var tableIns=table.render({
+                    elem: '#projectPaymentPageContent'
+                    ,url: '/cwgl/projectPayment/list' //数据接口
+                    ,where:$("#projectPaymentPageForm").serializeJson()
+                    ,request:{
+                        pageName: 'pageNum', //页码的参数名称，默认：page
+                        limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                    }
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {title: '序号', width:80, templet: function (d) {
+                            return d.LAY_TABLE_INDEX+1
+                        }}
+                            ,{field: 'payTypeName', title: '支出类型'}
+                            ,{field: 'projectName', title: '项目ID'}
+                            ,{field: 'money', title: '支出金额'}
+                            ,{field: 'payTime', title: '支出时间'}
+                    ]]
+        });
+        //监听行单击事件
+        table.on('row(projectPaymentPageTable)', function(obj){
+            $(".selected").removeClass("selected");
+            $(obj.tr).addClass("selected");
+            selectId=obj.data.id;
+        });
+        init=function(){
+            getContent(1);
+        };
+        getContent=function(pageNum){
+            selectId=undefined;
+            tableIns.reload({
+                where:$("#projectPaymentPageForm").serializeJson()
+        });
+        };
+        rest=function(){
+            $("#SEARCH_AND_payTime_GTE").val("");
+            $("#SEARCH_AND_payTime_LTE").val("");
+            $("#SEARCH_AND_projectId_EQ").val("");
+            $("#SEARCH_AND_payType_EQ").val("");
+            $("#projectName").val("");
+            $("#payTypeName").val("");
+            $(".layui-input").val("");
+            treeSelect.refresh('payTypeName');
+            form.render(); //更新全部
+            getContent(1);
+        };
+        add=function(title,url,width,height){
+            top.openDialog(title,url,width,height)
+        };
+
+
+        edit=function(title,url,width,height){
+            if(!selectId){
+                layer.msg("请选择需要修改的记录");
+                return;
+            }
+            top.openDialog(title,url+"?id="+selectId,width,height)
+        };
+        detail=function(title,url,width,height){
+            if(!selectId){
+                layer.msg("请选择需要查看的记录");
+                return;
+            }
+            top.openDialog(title,url+"/"+selectId,width,height)
+        };
+        del=function(title,url,width,height) {
+            if(!selectId){
+                layer.msg("请选择需要删除的记录");
+                return;
+            }
+            layer.confirm('您确定要删除所选信息吗？', {
+                btn: ['确定', '取消'] //可以无限个按钮
+            }, function(index, layero){
+                //按钮【按钮一】的回调
+                $.ajax({
+                    url:url+"?id="+selectId,
+                    success:function(data){
+                        if(data.success){
+                            layer.msg( "删除成功");
+                            getContent(1);
+                        }else{
+                            layer.msg(data.message?data.message:"操作失败");
+                        }
+                    }
+                });
+            }, function(index){
+                //按钮【按钮二】的回调
+            });
+        };
+
+
+            selectProjectIndex=function(){
+                top.openDialog("选择项目","/cwgl/project/listForSelect?isIndex=true",1000,800);
+            };
+            selectedProjectIndex=function(data){
+                $("#SEARCH_AND_projectId_EQ").val(data.id);
+                $("#projectName").val(data.name);
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="layui-row">
+    @include("../../include/action.html"){};
+    <form class="layui-form" action="/cwgl/projectPayment/list"  method="post"  id="projectPaymentPageForm"
+          onsubmit="return false;">
+        <input type="hidden" id="orderBy" name="orderBy" value=" id_desc"/>
+        <div class="test-table-reload-btn">
+            <div class="layui-inline">
+                支出类型:
+                <div class="layui-inline" >
+                    <input type="hidden" class="layui-input"  id="SEARCH_AND_payType_EQ"  name="SEARCH_AND_payType_EQ"  placeholder="请输入付款类型"  >
+                    <input type="search" class="layui-input"  readonly="readonly" lay-filter="payTypeName"
+                           name="payTypeName" id="payTypeName" placeholder="请输入付款类型">
+                </div>
+               支出时间:
+                <div class="layui-inline" >
+                    <input type="search" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="layui-input search-between-date"  id="SEARCH_AND_payTime_GTE"  name="SEARCH_AND_payTime_GTE"  placeholder="请输入支出时间"  >
+               -
+                    <input type="search" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" class="layui-input search-between-date" id="SEARCH_AND_payTime_LTE"  name="SEARCH_AND_payTime_LTE"  placeholder="请输入支出时间"  >
+                </div>
+                所属项目:
+                <div class="layui-inline" >
+                    <input class="layui-input"
+                           name="SEARCH_AND_projectId_EQ" type="hidden" id="SEARCH_AND_projectId_EQ" placeholder="请输入供应商ID"
+                    />
+                    <input type="search" class="layui-input"  readonly onclick="selectProjectIndex()" id="projectName"  name="projectName"  placeholder="请选择项目"  >
+                </div>
+                <!--            <label>名称:<input type="search" id="SEARCH_AND_name_LIKE" name="SEARCH_AND_name_LIKE"  placeholder=""  ></label>-->
+                <button class="layui-btn"  onclick="getContent()">搜索</button>
+                <button  class="layui-btn layui-btn-primary" onclick="rest()">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="projectPaymentPageContent" style="padding-top: 10px;" lay-filter="projectPaymentPageTable"></div>
+</body>
+</html>

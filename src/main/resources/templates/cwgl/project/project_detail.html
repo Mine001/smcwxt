@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>查看</title>
+    <link rel="stylesheet" href="${ctx}layui/css/layui.css"/>
+    <link rel="stylesheet" href="${ctx}css/common.css"/>
+    <script src="${ctx}layui/layui.js"></script>
+</head>
+<body>
+<table class="detail-table">
+    <tr>
+
+        <th class="title ">项目名称:</th>
+        <td class="cell">
+            ${data.name!}
+        </td>
+
+        <th class="title ">编码:</th>
+        <td class="cell">
+            ${data.code!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">联系人:</th>
+        <td class="cell">
+            ${data.linkMan!}
+        </td>
+
+        <th class="title ">联系人电话:</th>
+        <td class="cell">
+            ${data.linkManTel!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">项目地址:</th>
+        <td class="cell">
+            ${data.address!}
+        </td>
+
+        <th class="title ">项目所在区域:</th>
+        <td class="cell">
+            ${data.region!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">项目金额:</th>
+        <td class="cell">
+            ${data.money!}
+        </td>
+
+        <th class="title ">备注:</th>
+        <td class="cell">
+            ${data.remark!}
+        </td>
+    </tr>
+    <tr>
+
+        <th class="title ">施工队:</th>
+        <td class="cell">
+            ${data.construction!}
+        </td>
+
+
+
+
+
+        <th class="title ">项目状态:</th>
+        <td class="cell">
+            ${data.status!}
+        </td>
+    </tr>
+    <tr>
+
+
+    </tr>
+</table>
+<div style="text-align: center;">
+    <button class="layui-btn layui-btn-normal"  onclick="top.closeDialog(false)">关闭</button>
+</div>
+</body>
+</html>
